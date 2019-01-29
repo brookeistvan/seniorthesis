@@ -5,28 +5,40 @@ import matplotlib.pyplot as plt
 import numpy as np
 import datetime as dt
 import matplotlib.dates as mdates
+import random
 
-# Specify which directory the day tweet files are in
-tweet_files_dir = 'metoo copy'
-# Get all the tweet filenames
-tweet_files = sorted(os.listdir(tweet_files_dir))
-# Prepend directory to each tweet filename
-tweet_files = [tweet_files_dir+'/'+filename for filename in tweet_files]
+networkgeom = {1:[2,3], 2:[1,4,5], 3:[1,4], 4:[2,3,5], 5:[2,4]}
 
-users = {}
+infectedstates = {1:"S", 2:"I", 3:"S", 4:"S", 5:"S"}
+# for i in range(1, len(networkgeom)):
+#     infectedstates.update({i:S})
 
-# # Loop over all tweet files
-dates = []
-for tweet_file in tweet_files:
-    dates.append(str((tweet_file.split(".")[0]).split("/")[1]))
-    with open(tweet_file, 'r') as f:
-        # Go through each tweet in the tweet file
-        linenumber = 1
-        for line in f:
-            try:
-                tweet = json.loads(line.strip("\n"))
-            except:
-                print("Load error")
-                continue
 
-def isallinfected
+def isallinfected(states): 
+    for k,v in states.items():
+        if v == "S":    # there is still a susceptible ie not all infected 
+            return False
+    return True  # ie all are I 
+
+def flipstate(node): 
+    num = random.randint(0,9)  # random number 0-9
+    if num < 5: 
+        return True
+    return False 
+
+itercount = 0 
+
+# for i in range(10)
+# for different start node 
+while isallinfected(infectedstates) is not True:
+    itercount +=1
+    for node, state in infectedstates.items():
+        if state == "I": 
+            for key, neighbors in networkgeom.items():
+                if key == node: 
+                    for neighbor in neighbors:
+                        if flipstate(neighbor) is True: 
+                            infectedstates[neighbor] = "I"
+#itercount_by_iteration.append(itercount)
+print(itercount)
+
