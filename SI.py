@@ -9,11 +9,6 @@ import random
 
 networkgeom = {1:[2,3], 2:[1,4,5], 3:[1,4], 4:[2,3,5], 5:[2,4]}
 
-infectedstates = {1:"S", 2:"I", 3:"S", 4:"S", 5:"S"}
-# for i in range(1, len(networkgeom)):
-#     infectedstates.update({i:S})
-
-
 def isallinfected(states): 
     for k,v in states.items():
         if v == "S":    # there is still a susceptible ie not all infected 
@@ -22,23 +17,45 @@ def isallinfected(states):
 
 def flipstate(node): 
     num = random.randint(0,9)  # random number 0-9
-    if num < 5: 
+    if num < threshold: 
         return True
     return False 
 
-itercount = 0 
 
-# for i in range(10)
-# for different start node 
-while isallinfected(infectedstates) is not True:
-    itercount +=1
-    for node, state in infectedstates.items():
-        if state == "I": 
-            for key, neighbors in networkgeom.items():
-                if key == node: 
-                    for neighbor in neighbors:
-                        if flipstate(neighbor) is True: 
-                            infectedstates[neighbor] = "I"
-#itercount_by_iteration.append(itercount)
-print(itercount)
+
+iterations_count_by_start_and_threshold = []
+
+for threshold in range(1,11):
+    iterations_count_by_start_node = []
+    for s in range(1, (len(networkgeom)+1)):
+        # infectedstates = {1:"S", 2:"S", 3:"S", 4:"S", 5:"S"}
+        # infectedstates.update({s:"I"})
+        itercount_by_iteration = []
+        for i in range(10):
+            itercount = 0 
+            infectedstates = {1:"S", 2:"S", 3:"S", 4:"S", 5:"S"}
+            infectedstates.update({s:"I"})
+            while isallinfected(infectedstates) is not True:
+                itercount +=1
+                for node, state in infectedstates.items():
+                    if state == "I": 
+                        for key, neighbors in networkgeom.items():
+                            if key == node: 
+                                for neighbor in neighbors:
+                                    if flipstate(neighbor) is True: 
+                                        infectedstates[neighbor] = "I"
+            itercount_by_iteration.append(itercount)
+
+        # list with 5 elements that are average number of iterations
+        iterations_count_by_start_node.append(np.mean(itercount_by_iteration))
+    iterations_count_by_start_and_threshold.append(iterations_count_by_start_node)
+
+# print(iterations_count_by_start_node)
+print(iterations_count_by_start_and_threshold)
+
+x = [1,2,3,4,5]
+for j in range(len(iterations_count_by_start_and_threshold)):
+    plt.plot(x,[pt[j] for pt in iterations_count_by_start_and_threshold],label = 'id %s'%j)
+plt.legend()
+plt.show()
 
