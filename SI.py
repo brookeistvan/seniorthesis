@@ -53,9 +53,25 @@ for threshold in range(1,11):
 # print(iterations_count_by_start_node)
 print(iterations_count_by_start_and_threshold)
 
-x = [1,2,3,4,5]
-for j in range(len(iterations_count_by_start_and_threshold)):
-    plt.plot(x,[pt[j] for pt in iterations_count_by_start_and_threshold],label = 'id %s'%j)
+x = [1,2,3,4,5,6,7,8,9,10]
+# plt.plot(iterations_count_by_start_and_threshold[1][1])
+
+new_all = []
+for j in range(5):
+    iter_by_threshold = []
+    for k in range(len(iterations_count_by_start_and_threshold)):
+        iter_by_threshold.append(iterations_count_by_start_and_threshold[k][j])
+    new_all.append(iter_by_threshold)
+        # plt.plot([pt[k][j] for pt in iterations_count_by_start_and_threshold],label = 'id %s'%j)
+print(new_all)
+# for j in range(len(iterations_count_by_start_and_threshold)):
+#     for k in range(5):
+#         new_list_of_lists.append(iterations_count_by_start_and_threshold[j][k])
+#         plt.plot([pt[j][k] for pt in iterations_count_by_start_and_threshold],label = 'id %s'%j)
+for l in range(len(new_all)):
+    plt.plot(x, new_all[l], label='start node %s'%l)
 plt.legend()
 plt.show()
+
+# use a for loop to generate individual plots, then show them
 
