@@ -31,7 +31,7 @@ for threshold in range(1,11):
         # infectedstates = {1:"S", 2:"S", 3:"S", 4:"S", 5:"S"}
         # infectedstates.update({s:"I"})
         itercount_by_iteration = []
-        for i in range(10):
+        for i in range(100):
             itercount = 0 
             infectedstates = {1:"S", 2:"S", 3:"S", 4:"S", 5:"S"}
             infectedstates.update({s:"I"})

@@ -66,7 +66,7 @@ quote_count_by_day.remove(0)
 reply_count_by_day.remove(0)
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 plt.gca().xaxis.set_major_locator(mdates.DayLocator())
 print(all_tweet_count)
 print(x)
