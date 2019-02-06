@@ -111,16 +111,18 @@ def get_tweet_time(tweet, timezone_before=None, timezone_after=None):
     tweet_datetime: datetime, tweet time as a datetime. If timezone_before and
                     timezone_after are not None, returns datetime with timezone
     """
-    tweet_time = tweet['postedTime'] #'created_at'
-    try:
-        tweet_datetime = datetime.strptime(tweet_time,'%Y-%m-%dT%H:%M:%S.000Z')
-    except:
-        print('date time error')
-        tweet_datetime = ""
-    if timezone_before is not None and timezone_after is not None:
-        tweet_datetime = timezone_before.localize(tweet_datetime)
-        tweet_datetime = tweet_datetime.astimezone(timezone_after)
-    return tweet_datetime
+    if 'postedTime' in tweet:
+        tweet_time = tweet['postedTime'] #'created_at'
+
+        try:
+            tweet_datetime = datetime.strptime(tweet_time,'%Y-%m-%dT%H:%M:%S.000Z')
+        except:
+            print('date time error')
+            tweet_datetime = ""
+        if timezone_before is not None and timezone_after is not None:
+            tweet_datetime = timezone_before.localize(tweet_datetime)
+            tweet_datetime = tweet_datetime.astimezone(timezone_after)
+        return tweet_datetime
 
 def get_tweet_urls(tweet):
     try:
@@ -147,7 +149,9 @@ def get_tweet_hashtags(tweet):
     if len(hashtag_dicts) == 0:
         return list()
 
-    hashtags = {hashtag_dict['text'].lower() for hashtag_dict in hashtag_dicts}
+    for hashtag_dict in hashtag_dicts:
+        if 'text' in hashtag_dict:
+            hashtags = {hashtag_dict['text'].lower()} #for hashtag_dict in hashtag_dicts}
     return hashtags
 
 def is_retweet(tweet, retweet_type='retweet'):
@@ -246,6 +250,7 @@ def get_mention_interaction_ids(tweet, only_reply=False, unique_id=True):
     ------
     user_ids: set, user IDs of those mentioned in tweet (including in reply)
     """
+    global in_reply_to_user_id # adding this to prevent unbounded error
     user_ids = set()
     # Get in reply to user (is this user in mentions?)
     if "verb" in tweet:
@@ -254,9 +259,11 @@ def get_mention_interaction_ids(tweet, only_reply=False, unique_id=True):
                     in_reply_to_user_id = tweet['object']['actor']['id'.split(':')[2]]
                 else:
                     if "object" in tweet:
-                        in_reply_to_user_id = tweet['object']['actor']['preferredUsername']
+                        if "actor" in tweet['object']:
+                            in_reply_to_user_id = tweet['object']['actor']['preferredUsername']
                     else:
                         in_reply_to_user_id = ""
+
                 if in_reply_to_user_id is not None:
                     user_ids.add(in_reply_to_user_id)
                     if only_reply:

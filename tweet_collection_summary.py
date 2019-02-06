@@ -49,10 +49,12 @@ for hashtag in hashtags:
                     tweet = json.loads(line.strip("\n"))
                 except:
                     print("parse error")
+                    continue
                 #tweet = json.loads(line.strip())
-                tweet_date = get_tweet_time(tweet)
-                if tweet_date is not "":
-                    day_date = tweet_date.strftime('%y-%m-%d')
+
+                # tweet_date = get_tweet_time(tweet)
+                # if tweet_date is not "":
+                #     day_date = tweet_date.strftime('%y-%m-%d')
 
                 n_tweets += 1
 
@@ -84,14 +86,14 @@ for hashtag in hashtags:
                 for hashtag_pair in hashtag_pairs:
                     update_key2freq(hashtag_pair2freq, hashtag_pair)
 
-        date_n_tweets.append((day_date, n_tweets))
+                # date_n_tweets.append((day_date, n_tweets)) # originally two tabs left
 
     # --------------------------- Output statistics ----------------------------
     output_dir = '{}/{}'.format(summary_dir, hashtag)
     timeline_f = '{}/timeline.csv'.format(output_dir)
-    with open(timeline_f, 'w') as outfile:
-        for date,n_tweets in date_n_tweets:
-            outfile.write('{},{}\n'.format(date, n_tweets))
+    # with open(timeline_f, 'w') as outfile:
+    #     for date,n_tweets in date_n_tweets:
+    #         outfile.write('{},{}\n'.format(date, n_tweets))
 
     freq_files = ['top_terms', 'top_urls', 'top_mentions', 'top_hashtags',
                   'edgelist', 'top_hashtag_pairs']
