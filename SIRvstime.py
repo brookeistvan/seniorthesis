@@ -17,7 +17,7 @@ def isallinfected(states):
 
 def flipstate(node): 
     num = random.randint(0,9)  # random number 0-9
-    if num < threshold: 
+    if num < 5: 
         return True
     return False 
 
@@ -33,40 +33,46 @@ def flipstate2(states):
         return True
     return False
 
+infectedcount_by_iteration = [1]
+recoveredcount_by_iteration = [0]
+infectedcount = 1
+recoveredcount = 0
+infectedstates = {0:"I", 1:"S", 2:"S", 3:"S", 4:"S"}
+for i in range(10):
+    # infectedstates.update({s:"I"})
 
+    # while isallrecovered(infectedstates) is not True:
 
-iterations_count_by_start_and_threshold = []
+    for node, state in infectedstates.items():
+        if state == "I": 
+            for key, neighbors in networkgeom.items():
+                if key == node: 
+                    for neighbor in neighbors:
+                        if infectedstates[neighbor] == "S":
+                            if flipstate(neighbor) is True: 
+                                infectedstates[neighbor] = "I"
+                                infectedcount += 1 
+            if flipstate2(node) is True:
+                infectedstates[node] = "R"
+                recoveredcount += 1
+                infectedcount -= 1
+    print(infectedstates)
+    print(infectedcount)
+    print(recoveredcount)
+    infectedcount_by_iteration.append(infectedcount)
+    recoveredcount_by_iteration.append(recoveredcount)
 
-for threshold in range(1,11):
-    iterations_count_by_start_node = []
-    for s in range((len(networkgeom))):
-        # infectedstates = {1:"S", 2:"S", 3:"S", 4:"S", 5:"S"}
-        # infectedstates.update({s:"I"})
-        itercount_by_iteration = []
-        for i in range(10):
-            itercount = 0 
-            infectedstates = {0:"S", 1:"S", 2:"S", 3:"S", 4:"S"}
-            infectedstates.update({s:"I"})
-            while isallrecovered(infectedstates) is not True:
-                itercount +=1
-                for node, state in infectedstates.items():
-                    if state == "I": 
-                        for key, neighbors in networkgeom.items():
-                            if key == node: 
-                                for neighbor in neighbors:
-                                    if infectedstates[neighbor] == "S":
-                                        if flipstate(neighbor) is True: 
-                                            infectedstates[neighbor] = "I"
-                        if flipstate2(node) is True:
-                            infectedstates[node] = "R"
-                print(infectedstates)
-            itercount_by_iteration.append(itercount)
+print(infectedcount_by_iteration)
+print(recoveredcount_by_iteration)
 
-
-        # list with 5 elements that are average number of iterations
-        iterations_count_by_start_node.append(np.mean(itercount_by_iteration))
-    iterations_count_by_start_and_threshold.append(iterations_count_by_start_node)
-
-# print(iterations_count_by_start_node)
-print(iterations_count_by_start_and_threshold)
+# want number of iterations (x) and the number of infecteds (y)
+x = []
+for n in range(len(infectedcount_by_iteration)):
+    x.append(n)
+plt.plot(x, infectedcount_by_iteration, label="infected")
+plt.plot(x, recoveredcount_by_iteration, label="recovered")
+plt.xlabel("iteration")
+plt.ylabel("number of infected nodes")
+plt.legend()
+plt.show()
 
