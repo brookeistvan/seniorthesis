@@ -71,6 +71,7 @@ for n in range(len(infectedcount_by_iteration)):
     x.append(n)
 plt.plot(x, infectedcount_by_iteration, label="infected")
 plt.plot(x, recoveredcount_by_iteration, label="recovered")
+# plt.plot(x, susceptiblecount_by_iteration, label="recovered")
 plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()

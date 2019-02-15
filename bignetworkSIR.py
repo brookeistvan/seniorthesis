@@ -24,15 +24,15 @@ startnode = random.randint(0,len(adjacencydict))
 infectedstates.update({startnode:"I"})
 
 def flipstate(node): 
-    num = random.randint(0,90)  # random number 0-9
-    if num < 10: 
+    num = random.randint(0,99)  # random number 0-9
+    if num < 1: 
         return True
     return False 
 
 
 def flipstate2(states):
-    num2 = random.randint(0,9)
-    if num2 < 2:
+    num2 = random.randint(0,99)
+    if num2 < 10:
         return True
     return False
 
