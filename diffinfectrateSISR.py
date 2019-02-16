@@ -12,7 +12,7 @@ import sys
 import io
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.random_partition_graph([50,30],.7,.2)
+G = nx.random_partition_graph([100,60],.7,.2)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 
 # G = nx.planted_partition_graph(2, 100, 0.5, 0.1,seed=42)
@@ -27,22 +27,22 @@ startnode = random.randint(0,len(adjacencydict))
 infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
-    num = random.randint(0,99)  # random number 0-9
-    if num < 4: 
+    num = random.randint(0,999)  # random number 0-9
+    if num < threshold: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 5:
+    if num2 < 3:
         return True
     return False
 
 
 def flipstateS(states):
     num3 = random.randint(0,99)
-    if num3 < 80:
+    if num3 < 90:
         return True
     return False
 
@@ -53,7 +53,10 @@ susceptiblecount_by_iteration = [len(infectedstates)]
 infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
+threshold = 20
 for i in range(426):
+    if i%50 == 0: 
+        threshold += 50
     for node, state in infectedstates.items():
         if state == "I": 
             for key, neighbors in adjacencydict.items():
@@ -72,19 +75,20 @@ for i in range(426):
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 infectedcount -= 1
-    for j in range(len(reinject)):
-        if i == reinject[j]:
-            reinfectedcount = 0
-            nums = random.sample(range(0, 199), 10)
-            for node1, state1 in infectedstates.items():
-                for n in range(10):
-                    if node1 == nums[n]:
-                        if state1 == "S":
-                            infectedstates[node1] = "I"
-                            reinfectedcount += 1
-                            infectedcount += 1
-                            susceptiblecount -= 1
-            print(reinfectedcount)
+        # for j in range(len(reinject)):
+        #     if i == reinject[j]:
+        #         reinfectedcount = 0
+        #         nums = random.sample(range(0, 199), 10)
+        #         for node1, state1 in infectedstates.items():
+        #             for n in range(10):
+        #                 if node1 == nums[n]:
+        #                     if state1 == "S":
+        #                         infectedstates[node1] = "I"
+        #                         reinfectedcount += 1
+        #                         infectedcount += 1
+        #                         susceptiblecount -= 1
+        #         print(reinfectedcount)
+
 
     # print(infectedstates)
     # print(infectedcount)
