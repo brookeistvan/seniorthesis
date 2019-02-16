@@ -12,8 +12,11 @@ import sys
 import io
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.planted_partition_graph(2, 100, 0.5, 0.1,seed=42)
+G = nx.random_partition_graph([50,30],.7,.2)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
+
+# G = nx.planted_partition_graph(2, 100, 0.5, 0.1,seed=42)
+# adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 
 # create dict for states and one infected
 infectedstates = {}
@@ -25,16 +28,24 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 1: 
+    if num < 4: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 30:
+    if num2 < 5:
         return True
     return False
+
+
+def flipstateS(states):
+    num3 = random.randint(0,99)
+    if num3 < 80:
+        return True
+    return False
+
 
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
@@ -42,7 +53,7 @@ susceptiblecount_by_iteration = [len(infectedstates)]
 infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
-for i in range(100):
+for i in range(200):
     for node, state in infectedstates.items():
         if state == "I": 
             for key, neighbors in adjacencydict.items():
@@ -53,10 +64,51 @@ for i in range(100):
                                 infectedstates[neighbor] = "I"
                                 infectedcount += 1 
                                 susceptiblecount -= 1
-            if flipstateR(node) is True:
+            if flipstateS(node) is True: 
+                infectedstates[node] = "S"
+                susceptiblecount += 1
+                infectedcount -= 1
+            elif flipstateR(node) is True:
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 infectedcount -= 1
+    if i == 25:
+        reinfectedcount = 0
+        nums = random.sample(range(0, 199), 10)
+        for node1, state1 in infectedstates.items():
+            for n in range(10):
+                if node1 == nums[n]:
+                    if state1 == "S":
+                        infectedstates[node1] = "I"
+                        reinfectedcount += 1
+                        infectedcount += 1
+                        susceptiblecount -= 1
+        print(reinfectedcount)
+    elif i == 50:
+        reinfectedcount = 0
+        nums = random.sample(range(0, 199), 10)
+        for node1, state1 in infectedstates.items():
+            for n in range(10):
+                if node1 == nums[n]:
+                    if state1 == "S":
+                        infectedstates[node1] = "I"
+                        reinfectedcount += 1
+                        infectedcount += 1
+                        susceptiblecount -= 1
+        print(reinfectedcount)
+    elif i == 75:
+        reinfectedcount = 0
+        nums = random.sample(range(0, 199), 10)
+        for node1, state1 in infectedstates.items():
+            for n in range(10):
+                if node1 == nums[n]:
+                    if state1 == "S":
+                        infectedstates[node1] = "I"
+                        reinfectedcount += 1
+                        infectedcount += 1
+                        susceptiblecount -= 1
+        print(reinfectedcount)
+
     # print(infectedstates)
     # print(infectedcount)
     # print(recoveredcount)
@@ -67,9 +119,9 @@ for i in range(100):
 # print(infectedcount_by_iteration)
 # print(recoveredcount_by_iteration)
 
-# export graph so can be visualized
-outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-nx.write_gexf(G, outputdir+"SIRgraph.gexf")
+# # export graph so can be visualized
+# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
+# nx.write_gexf(G, outputdir+"SIRgraph.gexf")
 
 # want number of iterations (x) and the number of infecteds (y)
 x = []
