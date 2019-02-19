@@ -98,7 +98,7 @@ for i in range(426):
 
 # # export graph so can be visualized
 # outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-# nx.write_gexf(G, outputdir+"SIRgraph.gexf")
+# nx.write_gexf(G, outputdir+"SISRgraph.gexf")
 
 # want number of iterations (x) and the number of infecteds (y)
 x = []

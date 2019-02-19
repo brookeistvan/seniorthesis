@@ -46,7 +46,7 @@ def flipstateS(states):
         return True
     return False
 
-reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
+# reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]

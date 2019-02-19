@@ -14,7 +14,7 @@ tweet_files = sorted(os.listdir(tweet_files_dir))
 tweet_files = [tweet_files_dir+'/'+filename for filename in tweet_files]
 
 # up to AOL from http://www.journalism.org/2011/05/09/top-25/ and some from https://mashable.com/2013/04/08/breaking-news-twitter/#tGq4d1cjvOqx and https://www.adweek.com/digital/twitter-breaking-news/
-newsusernamelist = ["nytimes", "washingtonpost", "USATODAY", "WSJ", "latimes", "NYDailyNews", "nypost", "BostonGlobe", "sfchronicle", "chicagotribune", "DailyMailUK", "MailOnline", "MSNBC", "CNN", "abcnews", "FoxNews", "CBSNews", "BBCNews", "Reuters", "HuffPost", "Yahoo", "people", "AOLNews", "BuzzFeedNews", "AM2DM", "amjoyshow", "cnnbrk", "Newsweek", "BBCBreaking", "WSJbreakingnews", "ReutersLive", "CBSTopNews", "AJELive", "SkyNewsBreak", "ABCNewsLive", "NRO", "SportsCenter", "espn", "BBCWorld", "TheEconomist", "BreakingNews", "CBSTopNews", "BreakingTweets", "BreakingNewsStorm", "diggtop"] 
+newsusernamelist = ["nytimes", "washingtonpost", "USATODAY", "WSJ", "latimes", "NYDailyNews", "nypost", "BostonGlobe", "sfchronicle", "chicagotribune", "DailyMailUK", "MailOnline", "MSNBC", "CNN", "abcnews", "FoxNews", "CBSNews", "BBCNews", "Reuters", "HuffPost", "Yahoo", "people", "AOLNews", "BuzzFeedNews", "AM2DM", "amjoyshow", "cnnbrk", "Newsweek", "BBCBreaking", "WSJbreakingnews", "ReutersLive", "CBSTopNews", "AJELive", "SkyNewsBreak", "ABCNewsLive", "NRO", "SportsCenter", "espn", "BBCWorld", "TheEconomist", "BreakingNews", "CBSTopNews", "BreakingTweets", "BreakingNewsStorm", "diggtop", "ajplus"] 
 # many broken up liberal news accounts where as conservatives mainly listen to fox news 
 
 dates = []
