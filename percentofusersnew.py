@@ -59,9 +59,12 @@ fraction_old = b/c
 
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-plt.gca().xaxis.set_major_locator(mdates.DayLocator())
-plt.plot(x, fraction_new)
-plt.plot(x, fraction_old)
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+plt.plot(x, fraction_new, label="new users")
+plt.plot(x, fraction_old, label="old users")
+plt.xlabel("time")
+plt.ylabel("fraction of users")
+plt.legend(loc='upper left')
 plt.gcf().autofmt_xdate()
 plt.show()

@@ -7,7 +7,7 @@ import datetime as dt
 import matplotlib.dates as mdates
 
 # Specify which directory the day tweet files are in
-tweet_files_dir = 'metoo copy'
+tweet_files_dir = 'metoo'
 # Get all the tweet filenames
 tweet_files = sorted(os.listdir(tweet_files_dir))
 # Prepend directory to each tweet filename
@@ -39,9 +39,9 @@ for tweet_file in tweet_files:
                 except:
                     print("Load error")
                     continue
-
-                if tweet["verb"] == "share":
-                    retweet_count += 1 
+                if "verb" in tweet:
+                    if tweet["verb"] == "share":
+                        retweet_count += 1 
 
                 if "twitter_quoted_status" in tweet:
                     quote_count += 1 
@@ -57,6 +57,7 @@ for tweet_file in tweet_files:
         reply_count_by_day.append(reply_count)
 
 all_tweet_count.remove(0)
+print(sum(all_tweet_count))
 retweet_count_by_day.remove(0)
 quote_count_by_day.remove(0)
 reply_count_by_day.remove(0)
@@ -70,19 +71,22 @@ fraction_of_retweets = a/d
 fraction_of_quotes = b/d
 fraction_of_replies = c/d 
 
-print(retweet_count_by_day)
-print(quote_count_by_day)
-print(reply_count_by_day)
-print(fraction_of_retweets)
-print(fraction_of_replies)
-print(fraction_of_quotes)
+# print(retweet_count_by_day)
+# print(quote_count_by_day)
+# print(reply_count_by_day)
+# print(fraction_of_retweets)
+# print(fraction_of_replies)
+# print(fraction_of_quotes)
 
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-plt.gca().xaxis.set_major_locator(mdates.DayLocator())
-plt.plot(x, fraction_of_retweets)
-plt.plot(x, fraction_of_quotes)
-plt.plot(x, fraction_of_replies)
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+plt.plot(x, fraction_of_retweets, label="retweets")
+plt.plot(x, fraction_of_quotes, label="quote tweets")
+plt.plot(x, fraction_of_replies, label="replies")
+plt.xlabel("time")
+plt.ylabel("fraction of all tweets")
+plt.legend()
 plt.gcf().autofmt_xdate()
 plt.show()

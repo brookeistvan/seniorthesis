@@ -13,14 +13,14 @@ import io
 from networkx.algorithms.community import greedy_modularity_communities
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.random_partition_graph([30,20],.5,.05)
+G = nx.random_partition_graph([600,400],.5,.05)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 communities = list(greedy_modularity_communities(G))
-print(communities)
+# print(communities)
 
-# export graph so can be visualized
-outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
+# # export graph so can be visualized
+# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
+# nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
 
 infectedstates = {}
 for n in range(len(adjacencydict)):
@@ -44,7 +44,7 @@ elif startnode in communities[1]:
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 20: 
+    if num < 10: 
         return True
     return False 
 
@@ -72,7 +72,7 @@ recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
-for i in range(100): #426
+for i in range(426): #426
     for node, state in infectedstates.items():
         if state == "I": 
             for key, neighbors in adjacencydict.items():

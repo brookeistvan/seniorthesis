@@ -12,7 +12,7 @@ import sys
 import io
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.random_partition_graph([50,30],.7,.2)
+G = nx.random_partition_graph([1000,600],.2,.02)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 
 # G = nx.planted_partition_graph(2, 100, 0.5, 0.1,seed=42)
@@ -35,14 +35,14 @@ def flipstateI(node):
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 5:
+    if num2 < 10:
         return True
     return False
 
 
 def flipstateS(states):
     num3 = random.randint(0,99)
-    if num3 < 90:
+    if num3 < 95:
         return True
     return False
 
@@ -84,7 +84,7 @@ for i in range(426):
                             reinfectedcount += 1
                             infectedcount += 1
                             susceptiblecount -= 1
-            print(reinfectedcount)
+            # print(reinfectedcount)
 
     # print(infectedstates)
     # print(infectedcount)
