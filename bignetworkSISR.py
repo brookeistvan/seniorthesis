@@ -42,7 +42,7 @@ def flipstateR(states):
 
 def flipstateS(states):
     num3 = random.randint(0,99)
-    if num3 < 80:
+    if num3 < 90:
         return True
     return False
 

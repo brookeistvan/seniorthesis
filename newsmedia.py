@@ -7,7 +7,7 @@ import datetime as dt
 import matplotlib.dates as mdates
 
 # Specify which directory the day tweet files are in
-tweet_files_dir = 'metoo'
+tweet_files_dir = 'August metoo'
 # Get all the tweet filenames
 tweet_files = sorted(os.listdir(tweet_files_dir))
 # Prepend directory to each tweet filename
@@ -107,8 +107,8 @@ color = 'blue'
 ax2.set_ylabel('number of tweets from news outlets', color=color)  # we already handled the x-label with ax1
 ax2.plot(x, news_count_by_day, color=color)
 ax2.tick_params(axis='y', labelcolor=color)
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+plt.gca().xaxis.set_major_locator(mdates.DayLocator())
 plt.gcf().autofmt_xdate()
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
