@@ -58,4 +58,6 @@ for k1, v1 in numtweets_numusers.items():
 # graph key as x and value as y
 plt.bar(range(len(numtweets_numusers)), list(numtweets_numusers.values()), align='center')
 plt.xticks(range(len(numtweets_numusers)), list(numtweets_numusers.keys()))
+plt.xlabel("number of tweets sent by user")
+plt.ylabel("number of users who sent x number of tweets")
 plt.show()

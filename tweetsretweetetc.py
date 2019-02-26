@@ -40,8 +40,9 @@ for tweet_file in tweet_files:
                     print("Load error")
                     continue
 
-                if tweet["verb"] == "share":
-                    retweet_count += 1 
+                if "verb" in tweet:
+                    if tweet["verb"] == "share":
+                        retweet_count += 1 
 
                 if "twitter_quoted_status" in tweet:
                     quote_count += 1 
@@ -67,14 +68,15 @@ reply_count_by_day.remove(0)
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-plt.gca().xaxis.set_major_locator(mdates.DayLocator())
-print(all_tweet_count)
-print(x)
-plt.plot(x, np.log(all_tweet_count))
-plt.plot(x, np.log(reply_count_by_day))
-plt.plot(x, np.log(quote_count_by_day))
-plt.plot(x, np.log(retweet_count_by_day))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+# print(all_tweet_count)
+# print(x)
+plt.plot(x, np.log(all_tweet_count), label="All tweets")
+plt.plot(x, np.log(reply_count_by_day), label="Replies")
+plt.plot(x, np.log(quote_count_by_day), label="Quotes")
+plt.plot(x, np.log(retweet_count_by_day), label="Retweets")
 plt.xlabel("time")
 plt.ylabel("log number of tweet type")
+plt.legend()
 plt.gcf().autofmt_xdate()
 plt.show()
