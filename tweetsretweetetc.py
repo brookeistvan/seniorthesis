@@ -7,7 +7,7 @@ import datetime as dt
 import matplotlib.dates as mdates
 
 # Specify which directory the day tweet files are in
-tweet_files_dir = 'metoo copy'
+tweet_files_dir = 'metoo'
 # Get all the tweet filenames
 tweet_files = sorted(os.listdir(tweet_files_dir))
 # Prepend directory to each tweet filename
@@ -56,9 +56,9 @@ for tweet_file in tweet_files:
         quote_count_by_day.append(quote_count)
         reply_count_by_day.append(reply_count)
 
-print(retweet_count_by_day)
-print(quote_count_by_day)
-print(reply_count_by_day)
+# print(retweet_count_by_day)
+# print(quote_count_by_day)
+# print(reply_count_by_day)
 
 all_tweet_count.remove(0)
 retweet_count_by_day.remove(0)
@@ -74,5 +74,7 @@ plt.plot(x, np.log(all_tweet_count))
 plt.plot(x, np.log(reply_count_by_day))
 plt.plot(x, np.log(quote_count_by_day))
 plt.plot(x, np.log(retweet_count_by_day))
+plt.xlabel("time")
+plt.ylabel("log number of tweet type")
 plt.gcf().autofmt_xdate()
 plt.show()

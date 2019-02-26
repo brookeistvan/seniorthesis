@@ -14,7 +14,7 @@ import datetime as dt
 import matplotlib.dates as mdates
 
 # Specify which directory the day tweet files are in
-tweet_files_dir = 'metoo copy'
+tweet_files_dir = 'metoo'
 # Get all the tweet filenames
 tweet_files = sorted(os.listdir(tweet_files_dir))
 # Prepend directory to each tweet filename
@@ -94,7 +94,7 @@ user_num_by_day.remove(0)
 
 count = 0
 totalrecoved_by_day = []
-for r in recoveredcount_by_day: 
+for r in recoverdcount_by_day: 
     count += r 
     totalrecoved_by_day.append(count)
 
