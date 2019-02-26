@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import datetime as dt
 import matplotlib.dates as mdates
+import random
  
 
 # Specify which directory the day tweet files are in
-tweet_files_dir = 'metoo copy'
+tweet_files_dir = 'metoo'
 # Get all the tweet filenames
 tweet_files = sorted(os.listdir(tweet_files_dir))
 # Prepend directory to each tweet filename
@@ -43,13 +44,15 @@ for tweet_file in tweet_files:
 
 commonusers = {}
 for user, count in users.items():
-    if count > 100:
+    if count > 500:
         commonusers.update({user:count})
 
+datecount = 0 
 rasterusers = {}
 for tweet_file in tweet_files:
     date = str((tweet_file.split(".")[0]).split("/")[1])
     dates.append(date)
+    datecount += 1
     with open(tweet_file, 'r') as f:
         # Go through each tweet in the tweet file
         for line in f:
@@ -63,26 +66,25 @@ for tweet_file in tweet_files:
                 if "preferredUsername" in tweet["actor"]:
                     if tweet["actor"]["preferredUsername"] in commonusers:
                         if tweet["actor"]["preferredUsername"] in rasterusers:
-                            rasterusers[tweet["actor"]["preferredUsername"]].append(date)
+                            rasterusers[tweet["actor"]["preferredUsername"]].append(datecount)
                         else:
-                            rasterusers.update({tweet["actor"]["preferredUsername"]: [date]})
+                            rasterusers.update({tweet["actor"]["preferredUsername"]: [datecount]})
 
-print(len(rasterusers))
+# print(rasterusers)
 
 orderednames = []
 for key,value in rasterusers.items():
     orderednames.append(key)
 
+print(orderednames)
+# print(orderednames)
+
 datamatrix = np.array([rasterusers[i] for i in orderednames])
 
 # print(datamatrix)
 
-lineSize = [.3]*len(rasterusers)
+lineSize = [.2]*len(rasterusers)
 
-# colorCodes = np.array([[0,0,0],
-#     [0,0,0],
-#     [0,0,0],
-#     [0,0,0]])
 
 # colorCodes = np.array([[0, 0, 0],
 
@@ -92,7 +94,14 @@ lineSize = [.3]*len(rasterusers)
 
 #                         [0, 0, 1]])  
 
-plt.eventplot(datamatrix, linelengths = lineSize)
+w = 3
+h = len(rasterusers)
+colormatrix = [[0 for x in range(w)] for y in range(h)] 
+colorCodes = np.array(colormatrix)
+
+plt.eventplot(datamatrix, colors=colorCodes, linelengths = lineSize)
+plt.xlabel("time")
+plt.ylabel("user")
 plt.show()
 
 # to remove u: name = str(lang.split("'")[0])
@@ -128,7 +137,7 @@ plt.show()
 
      
 # # Draw a spike raster plot
-# plt.eventplot(neuralData, color=colorCodes, linelengths = lineSize)     
+# plt.eventplot(neuralData, colors=colorCodes, linelengths = lineSize)     
 
  
 # # Provide the title for the spike raster plot
