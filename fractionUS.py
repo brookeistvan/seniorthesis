@@ -75,33 +75,42 @@ for tweet_file in tweet_files:
         enlangcount_by_day.append(enlangcount)
         otherlangcount_by_day.append(otherlangcount)
 
-print(uscountcountrycode_by_day)
-print(uscounttwittercode_by_day)
-print(abroadcountcountrycode_by_day)
-print(abroadcounttwittercode_by_day)
-print(enlangcount_by_day)
-print(otherlangcount_by_day)
-print(all_tweet_count)
+# print(uscountcountrycode_by_day)
+# print(uscounttwittercode_by_day)
+# print(abroadcountcountrycode_by_day)
+# print(abroadcounttwittercode_by_day)
+# print(enlangcount_by_day)
+# print(otherlangcount_by_day)
+# print(all_tweet_count)
+
+# print(sum(enlangcount_by_day))
+# print(sum(otherlangcount_by_day))
+# print(sum(all_tweet_count))
 
 all_tweet_count.remove(0)
 enlangcount_by_day.remove(0)
 otherlangcount_by_day.remove(0)
 
-d = np.array(all_tweet_count, dtype=np.float)
-a = np.array(enlangcount_by_day, dtype=np.float)
-b = np.array(otherlangcount_by_day, dtype=np.float)
+# d = np.array(all_tweet_count, dtype=np.float)
+# a = np.array(enlangcount_by_day, dtype=np.float)
+# b = np.array(otherlangcount_by_day, dtype=np.float)
 
-fraction_of_enlang = a/d
-fraction_of_other = b/d
-
+# fraction_of_enlang = a/d
+# fraction_of_other = b/d
+y = [ enlangcount_by_day, otherlangcount_by_day ]
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-plt.plot(x, fraction_of_enlang, label="English primary")
-plt.plot(x, fraction_of_other, label="Other primary")
+plt.plot([],[], color='b', label='English', linewidth=5)
+plt.plot([],[], color='r', label='Foreign', linewidth=5)
+plt.stackplot(x, enlangcount_by_day,otherlangcount_by_day, colors=['b','r'])
+
+# plt.stackplot(x,enlangcount_by_day, otherlangcount_by_day, label=['English Primary', 'Other Primary'])
+# plt.plot(x, fraction_of_enlang, label="English primary")
+# plt.plot(x, fraction_of_other, label="Other primary")
 plt.xlabel("time")
-plt.ylabel("fraction of user languages")
+plt.ylabel("number of tweets")
 plt.gcf().autofmt_xdate()
 plt.legend()
 plt.show()

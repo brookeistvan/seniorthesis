@@ -13,14 +13,14 @@ import io
 from networkx.algorithms.community import greedy_modularity_communities
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.random_partition_graph([600,400],.5,.05)
+G = nx.random_partition_graph([700,300],.2,.005)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 communities = list(greedy_modularity_communities(G))
 # print(communities)
 
-# # export graph so can be visualized
-# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-# nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
+# export graph so can be visualized
+outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
+nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
 
 infectedstates = {}
 for n in range(len(adjacencydict)):

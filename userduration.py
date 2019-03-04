@@ -97,11 +97,12 @@ for k,v in durationdict.items():
 print(durationdict)
 print(onedaypeople)
 print(greatthanhundredpeople)
+print(np.mean(durations))
 
-# graph key as x and value as y
-plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
-plt.xticks(range(len(durationdict)), list(durationdict.keys()))
-plt.xlabel("number of days infected")
-plt.ylabel("number of users infected x days")
-plt.show()
+# # graph key as x and value as y
+# plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
+# plt.xticks(range(len(durationdict)), list(durationdict.keys()))
+# plt.xlabel("number of days infected")
+# plt.ylabel("number of users infected x days")
+# plt.show()
 

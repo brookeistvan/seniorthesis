@@ -41,10 +41,10 @@ for tweet_file in tweet_files:
                     else:
                         users.update({tweet["actor"]["preferredUsername"]:1})
 
-
+print(len(users))
 commonusers = {}
 for user, count in users.items():
-    if count > 400:
+    if count > 100:
         commonusers.update({user:count})
 
 datecount = 0 

@@ -7,7 +7,7 @@ import datetime as dt
 import matplotlib.dates as mdates
 
 # Specify which directory the day tweet files are in
-tweet_files_dir = 'January Metoo'
+tweet_files_dir = 'demeber 2018 metoo'
 # Get all the tweet filenames
 tweet_files = sorted(os.listdir(tweet_files_dir))
 # Prepend directory to each tweet filename
@@ -52,7 +52,10 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 plt.gca().xaxis.set_major_locator(mdates.DayLocator())
 print(all_tweet_count)
 print(x)
-plt.plot(x, np.log(all_tweet_count))
-plt.plot(x, np.log(onestd))
+plt.plot(x, np.log(all_tweet_count), label="all tweets")
+plt.plot(x, np.log(onestd), label="one standard deviation above the mean")
+plt.xlabel("time")
+plt.ylabel("log number of tweets")
 plt.gcf().autofmt_xdate()
+plt.legend()
 plt.show()
