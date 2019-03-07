@@ -28,7 +28,7 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 2: 
+    if num < 10: 
         return True
     return False 
 
@@ -42,11 +42,11 @@ def flipstateR(states):
 
 def flipstateS(states):
     num3 = random.randint(0,99)
-    if num3 < 10:
+    if num3 < 80:
         return True
     return False
 
-# reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
+reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]
@@ -61,7 +61,6 @@ for i in range(426):
                 useractivedays[node].append(i)
             else:  
                 useractivedays.update({node:[i]})
-
             for key, neighbors in adjacencydict.items():
                 if key == node: 
                     for neighbor in neighbors:
@@ -70,47 +69,26 @@ for i in range(426):
                                 infectedstates[neighbor] = "I"
                                 infectedcount += 1 
                                 susceptiblecount -= 1
-            if flipstateR(node) is True:
+            if flipstateS(node) is True: 
+                infectedstates[node] = "S"
+                susceptiblecount += 1
+                infectedcount -= 1
+            elif flipstateR(node) is True:
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 infectedcount -= 1
-
-        if state == "R":
-            # for keyr, neighborsr in adjacencydict.items():
-            #     if keyr == node: 
-            if flipstateS(node) is True: 
-                infectedstates[node] = "S"
-                recoveredcount -= 1
-                susceptiblecount += 1
-
-
-
-    #                 for neighborz in neighborsr:
-    #                     if infectedstates[neighbor] == "S":
-    #                         if flipstateI(neighbor) is True: 
-    #                             infectedstates[neighbor] = "I"
-    #                             infectedcount += 1 
-    #                             susceptiblecount -= 1
-    #         if flipstateS(node) is True: 
-    #             infectedstates[node] = "S"
-    #             susceptiblecount += 1
-    #             infectedcount -= 1
-    #         elif flipstateR(node) is True:
-    #             infectedstates[node] = "R"
-    #             recoveredcount += 1
-    #             infectedcount -= 1
-    # for j in range(len(reinject)):
-    #     if i == reinject[j]:
-    #         reinfectedcount = 0
-    #         nums = random.sample(range(0, 199), 10)
-    #         for node1, state1 in infectedstates.items():
-    #             for n in range(10):
-    #                 if node1 == nums[n]:
-    #                     if state1 == "S":
-    #                         infectedstates[node1] = "I"
-    #                         reinfectedcount += 1
-    #                         infectedcount += 1
-    #                         susceptiblecount -= 1
+    for j in range(len(reinject)):
+        if i == reinject[j]:
+            reinfectedcount = 0
+            nums = random.sample(range(0, 199), 10)
+            for node1, state1 in infectedstates.items():
+                for n in range(10):
+                    if node1 == nums[n]:
+                        if state1 == "S":
+                            infectedstates[node1] = "I"
+                            reinfectedcount += 1
+                            infectedcount += 1
+                            susceptiblecount -= 1
             # print(reinfectedcount)
 
     # print(infectedstates)
@@ -120,9 +98,16 @@ for i in range(426):
     recoveredcount_by_iteration.append(recoveredcount)
     susceptiblecount_by_iteration.append(susceptiblecount)
 
+# print(infectedcount_by_iteration)
+# print(recoveredcount_by_iteration)
 
-# print(useractivedays)
+# # export graph so can be visualized
+# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
+# nx.write_gexf(G, outputdir+"SISRgraph.gexf")
 
+
+print(useractivedays)
+    
 durations = []
 durationdict = {}
 for user, activedays in useractivedays.items():
@@ -134,42 +119,26 @@ for user, activedays in useractivedays.items():
     else:
         durationdict.update({duration:1})
 
-print(durationdict)
-
-# want number of iterations (x) and the number of infecteds (y)
-x = []
-for n in range(len(infectedcount_by_iteration)):
-    x.append(n)
-plt.plot(x, infectedcount_by_iteration, label="infected")
-plt.plot(x, recoveredcount_by_iteration, label="recovered")
-plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
-plt.xlabel("iteration")
-plt.ylabel("number of infected nodes")
-plt.legend()
-plt.show()
-
 # # graph key as x and value as y
 # plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
 # plt.xticks(range(len(durationdict)), list(durationdict.keys()))
-bins = []
-alldurations = list(durationdict.keys())
-for i in range(0,(max(alldurations)+50),50):
-    bins.append(i)
-
-print(bins)
-# print(bins)
-# print(max(alldurations))
-
-plt.hist(durations, bins)
-plt.xticks(range(0,(max(alldurations)+50),50), bins)
+plt.hist(durations)
 plt.xlabel("number of days infected")
 plt.ylabel("number of nodes infected x days")
 plt.show()
 
 
 
-
-
-
+# # want number of iterations (x) and the number of infecteds (y)
+# x = []
+# for n in range(len(infectedcount_by_iteration)):
+#     x.append(n)
+# plt.plot(x, infectedcount_by_iteration, label="infected")
+# plt.plot(x, recoveredcount_by_iteration, label="recovered")
+# plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
+# plt.xlabel("iteration")
+# plt.ylabel("number of infected nodes")
+# plt.legend()
+# plt.show()
 
 

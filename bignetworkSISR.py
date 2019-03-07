@@ -53,9 +53,14 @@ susceptiblecount_by_iteration = [len(infectedstates)]
 infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
+useractivedays = {}
 for i in range(426):
     for node, state in infectedstates.items():
         if state == "I": 
+            if node in useractivedays.keys():
+                useractivedays[node].append(i)
+            else:  
+                useractivedays.update({node:[i]})
             for key, neighbors in adjacencydict.items():
                 if key == node: 
                     for neighbor in neighbors:
@@ -100,14 +105,39 @@ for i in range(426):
 # outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
 # nx.write_gexf(G, outputdir+"SISRgraph.gexf")
 
-# want number of iterations (x) and the number of infecteds (y)
-x = []
-for n in range(len(infectedcount_by_iteration)):
-    x.append(n)
-plt.plot(x, infectedcount_by_iteration, label="infected")
-plt.plot(x, recoveredcount_by_iteration, label="recovered")
-plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
-plt.xlabel("iteration")
-plt.ylabel("number of infected nodes")
-plt.legend()
+
+print(useractivedays)
+    
+durations = []
+durationdict = {}
+for user, activedays in useractivedays.items():
+    duration = 0
+    duration += (activedays[-1] - activedays[0])
+    durations.append(duration)
+    if duration in durationdict:
+        durationdict[duration] += 1
+    else:
+        durationdict.update({duration:1})
+
+# graph key as x and value as y
+plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
+plt.xticks(range(len(durationdict)), list(durationdict.keys()))
+plt.xlabel("number of days infected")
+plt.ylabel("number of nodes infected x days")
 plt.show()
+
+
+
+# # want number of iterations (x) and the number of infecteds (y)
+# x = []
+# for n in range(len(infectedcount_by_iteration)):
+#     x.append(n)
+# plt.plot(x, infectedcount_by_iteration, label="infected")
+# plt.plot(x, recoveredcount_by_iteration, label="recovered")
+# plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
+# plt.xlabel("iteration")
+# plt.ylabel("number of infected nodes")
+# plt.legend()
+# plt.show()
+
+

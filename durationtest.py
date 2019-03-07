@@ -19,8 +19,8 @@ communities = list(greedy_modularity_communities(G))
 # print(communities)
 
 # export graph so can be visualized
-outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
+# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
+# nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
 
 infectedstates = {}
 for n in range(len(adjacencydict)):
@@ -72,9 +72,14 @@ recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
+useractivedays = {}
 for i in range(426): #426
     for node, state in infectedstates.items():
         if state == "I": 
+            if node in useractivedays.keys():
+                useractivedays[node].append(i)
+            else:  
+                useractivedays.update({node:[i]})
             for key, neighbors in adjacencydict.items():
                 if key == node: 
                     for neighbor in neighbors:
@@ -99,6 +104,10 @@ for i in range(426): #426
                 recoveredcount += 1
                 infectedcount -= 1
         elif state == "Z": 
+            if node in useractivedays.keys():
+                useractivedays[node].append(i)
+            else:  
+                useractivedays.update({node:[i]})
             for keyz, neighborsz in adjacencydict.items():
                 if keyz == node:
                     for neighborz in neighborsz:
@@ -121,47 +130,59 @@ for i in range(426): #426
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 skepticcount -= 1
-        # print(skepticcount)
 
-   # # reinject infected nodes exogenouslyh into the network 
-   #  for j in range(len(reinject)):
-   #      if i == reinject[j]:
-   #          reinfectedcount = 0
-   #          nums = random.sample(range(0, 199), 10)
-   #          for node1, state1 in infectedstates.items():
-   #              for n in range(10):
-   #                  if node1 == nums[n]:
-   #                      if state1 == "S":
-   #                          infectedstates[node1] = "I"
-   #                          reinfectedcount += 1
-   #                          infectedcount += 1
-   #                          susceptiblecount -= 1
-   #          print(reinfectedcount)
-
-    # print(infectedstates)
-    # print(infectedcount)
-    # print(recoveredcount)
     infectedcount_by_iteration.append(infectedcount)
     skepticcount_by_iteration.append(skepticcount)
     recoveredcount_by_iteration.append(recoveredcount)
     susceptiblecount_by_iteration.append(susceptiblecount)
 
-# print(infectedcount_by_iteration)
-# print(recoveredcount_by_iteration)
 
-# # export graph so can be visualized
-# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-# nx.write_gexf(G, outputdir+"SISRgraph.gexf")
+# print(useractivedays)
+    
+durations = []
+durationdict = {}
+for user, activedays in useractivedays.items():
+    duration = 0
+    duration += (activedays[-1] - activedays[0])
+    durations.append(duration)
+    if duration in durationdict:
+        durationdict[duration] += 1
+    else:
+        durationdict.update({duration:1})
 
-# want number of iterations (x) and the number of infecteds (y)
-x = []
-for n in range(len(infectedcount_by_iteration)):
-    x.append(n)
-plt.plot(x, infectedcount_by_iteration, label="infected", color="r")
-plt.plot(x, skepticcount_by_iteration, label="skeptics", color="k")
-plt.plot(x, recoveredcount_by_iteration, label="recovered", color="b")
-plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color="g")
-plt.xlabel("iteration")
-plt.ylabel("number of infected nodes")
-plt.legend()
+print(durationdict)
+# # Remove people who only appear on one day
+# onedaypeople = 0
+# greatthanhundredpeople = 0
+# for k,v in durationdict.items():
+#     if k == 0:
+#         onedaypeople = v
+#         del durationdict[k]
+
+#     if k > 50:
+#         greatthanhundredpeople += v 
+#         del durationdict[k]
+
+
+# print(durationdict)
+# print(onedaypeople)
+# print(greatthanhundredpeople)
+# print(np.mean(durations))
+
+# # graph key as x and value as y
+# plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
+# plt.xticks(range(len(durationdict)), list(durationdict.keys()))
+# plt.xlabel("number of days infected")
+# plt.ylabel("number of nodes infected x days")
+# plt.show()
+
+alldurations = list(durationdict.keys())
+bins = list(range(max(alldurations)))
+print(bins)
+print(max(alldurations))
+
+plt.hist(durations)
+plt.xlabel("number of days infected")
+plt.ylabel("number of nodes infected x days")
 plt.show()
+

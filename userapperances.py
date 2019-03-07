@@ -49,6 +49,7 @@ numtweets_numusers = {}
 for key,value in tweettimes_listofusers.items():
     numtweets_numusers.update({key:len(value)})
 print(len(numtweets_numusers))
+print(numtweets_numusers)
 
 # drop entries with key >10 
 for k1, v1 in numtweets_numusers.items():

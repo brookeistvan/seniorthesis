@@ -12,27 +12,27 @@ import sys
 import io
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.planted_partition_graph(2, 100, 0.5, 0.1,seed=42)
+G = nx.random_partition_graph([700,300],.1,.0125)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 
 # create dict for states and one infected
 infectedstates = {}
 for n in range(len(adjacencydict)):
-	infectedstates.update({n:"S"})
+    infectedstates.update({n:"S"})
 
 startnode = random.randint(0,len(adjacencydict)) 
 infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 1: 
+    if num < 10: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 30:
+    if num2 < 10:
         return True
     return False
 
@@ -42,9 +42,14 @@ susceptiblecount_by_iteration = [len(infectedstates)]
 infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
-for i in range(100):
+useractivedays ={}
+for i in range(426):
     for node, state in infectedstates.items():
         if state == "I": 
+            if node in useractivedays.keys():
+                useractivedays[node].append(i)
+            else:  
+                useractivedays.update({node:[i]})
             for key, neighbors in adjacencydict.items():
                 if key == node: 
                     for neighbor in neighbors:
@@ -67,9 +72,22 @@ for i in range(100):
 # print(infectedcount_by_iteration)
 # print(recoveredcount_by_iteration)
 
-# export graph so can be visualized
-outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-nx.write_gexf(G, outputdir+"SIRgraph.gexf")
+# # export graph so can be visualized
+# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
+# nx.write_gexf(G, outputdir+"SIRgraph.gexf")
+
+print(useractivedays)
+
+durations = []
+durationdict = {}
+for user, activedays in useractivedays.items():
+    duration = 0
+    duration += (activedays[-1] - activedays[0])
+    durations.append(duration)
+    if duration in durationdict:
+        durationdict[duration] += 1
+    else:
+        durationdict.update({duration:1})
 
 # want number of iterations (x) and the number of infecteds (y)
 x = []
@@ -81,4 +99,15 @@ plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
 plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()
+plt.show()
+
+
+alldurations = list(durationdict.keys())
+bins = list(range(max(alldurations)))
+print(bins)
+print(max(alldurations))
+
+plt.hist(durations)
+plt.xlabel("number of days infected")
+plt.ylabel("number of nodes infected x days")
 plt.show()
