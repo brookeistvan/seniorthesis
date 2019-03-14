@@ -25,25 +25,27 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 10: 
+    if num < 6: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 10:
+    if num2 < 6:
         return True
     return False
 
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]
+activelyinfected_by_iteration = [1]
 infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
 useractivedays ={}
 for i in range(426):
+    activelyinfected = 0
     for node, state in infectedstates.items():
         if state == "I": 
             if node in useractivedays.keys():
@@ -56,6 +58,7 @@ for i in range(426):
                         if infectedstates[neighbor] == "S":
                             if flipstateI(neighbor) is True: 
                                 infectedstates[neighbor] = "I"
+                                activelyinfected += 1
                                 infectedcount += 1 
                                 susceptiblecount -= 1
             if flipstateR(node) is True:
@@ -65,6 +68,10 @@ for i in range(426):
     # print(infectedstates)
     # print(infectedcount)
     # print(recoveredcount)
+    if infectedcount < 100:
+        print(i)
+
+    activelyinfected_by_iteration.append(activelyinfected)
     infectedcount_by_iteration.append(infectedcount)
     recoveredcount_by_iteration.append(recoveredcount)
     susceptiblecount_by_iteration.append(susceptiblecount)
@@ -76,7 +83,7 @@ for i in range(426):
 # outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
 # nx.write_gexf(G, outputdir+"SIRgraph.gexf")
 
-print(useractivedays)
+# print(useractivedays)
 
 durations = []
 durationdict = {}
@@ -89,25 +96,29 @@ for user, activedays in useractivedays.items():
     else:
         durationdict.update({duration:1})
 
+
+print(activelyinfected_by_iteration)
 # want number of iterations (x) and the number of infecteds (y)
 x = []
 for n in range(len(infectedcount_by_iteration)):
     x.append(n)
-plt.plot(x, infectedcount_by_iteration, label="infected")
-plt.plot(x, recoveredcount_by_iteration, label="recovered")
-plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
-plt.xlabel("iteration")
-plt.ylabel("number of infected nodes")
-plt.legend()
+plt.plot(x, activelyinfected_by_iteration, label="infected that day")
 plt.show()
+# plt.plot(x, infectedcount_by_iteration, label="infected")
+# plt.plot(x, recoveredcount_by_iteration, label="recovered")
+# plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
+# plt.xlabel("iteration")
+# plt.ylabel("number of infected nodes")
+# plt.legend()
+# plt.show()
 
 
-alldurations = list(durationdict.keys())
-bins = list(range(max(alldurations)))
-print(bins)
-print(max(alldurations))
+# alldurations = list(durationdict.keys())
+# bins = list(range(max(alldurations)))
+# # print(bins)
+# # print(max(alldurations))
 
-plt.hist(durations)
-plt.xlabel("number of days infected")
-plt.ylabel("number of nodes infected x days")
-plt.show()
+# plt.hist(durations)
+# plt.xlabel("number of days infected")
+# plt.ylabel("number of nodes infected x days")
+# plt.show()

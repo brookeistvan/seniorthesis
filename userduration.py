@@ -69,35 +69,65 @@ for tweet_file in tweet_files:
                         rasterusers[tweet["actor"]["preferredUsername"]].append(datecount)
                     else:
                         rasterusers.update({tweet["actor"]["preferredUsername"]: [datecount]})
-
+infectedcount_by_day = []
 durations = []
 durationdict = {}
+stillinfected = {}
+for i in range(1,427):
+    stillinfected.update({i:0})
+print(stillinfected)
+
 for user1, activedays in rasterusers.items():
-    duration = 0
-    duration += (activedays[-1] - activedays[0])
-    durations.append(duration)
-    if duration in durationdict:
-        durationdict[duration] += 1
-    else:
-        durationdict.update({duration:1})
+    # duration = 0
+    # duration += (activedays[-1] - activedays[0])
+    # durations.append(duration)
+    # if duration in durationdict:
+    #     durationdict[duration] += 1
+    # else:
+    #     durationdict.update({duration:1})
+    for day in range(activedays[0], (activedays[-1]+1)):
+        stillinfected[day] += 1
+print(stillinfected)
+del stillinfected[1]
 
-# Remove people who only appear on one day
-onedaypeople = 0
-greatthanhundredpeople = 0
-for k,v in durationdict.items():
-    if k == 0:
-        onedaypeople = v
-        del durationdict[k]
+dates.remove('')
+x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
+print(len(x))
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+plt.plot(x, stillinfected.values())
+plt.xlabel("time")
+plt.ylabel("number of users still infected")
+plt.show()
 
-    if k > 50:
-        greatthanhundredpeople += v 
-        del durationdict[k]
+# to find users who are still infected
+# for i in range(1,427):
+#     infectedcount = 0
+#     for user, activedays in rasterusers.items():
+#        if i in activedays: 
+#             infectedcount += 1
+#     infectedcount_by_day.append(infectedcount)
+#     print(infectedcount_by_day)
+
+# print(infectedcount_by_day)
+
+# # Remove people who only appear on one day
+# onedaypeople = 0
+# greatthanhundredpeople = 0
+# for k,v in durationdict.items():
+#     if k == 0:
+#         onedaypeople = v
+#         del durationdict[k]
+
+#     if k > 50:
+#         greatthanhundredpeople += v 
+#         del durationdict[k]
 
 
-print(durationdict)
-print(onedaypeople)
-print(greatthanhundredpeople)
-print(np.mean(durations))
+# print(durationdict)
+# print(onedaypeople)
+# print(greatthanhundredpeople)
+# print(np.mean(durations))
 
 # # graph key as x and value as y
 # plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')

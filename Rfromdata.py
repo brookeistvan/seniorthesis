@@ -65,9 +65,11 @@ for tweet_file in tweet_files:
 
 recoverdcount_by_day= []
 newdaycount = 0
+counter = 0
 for tweet_file in tweet_files:
     newdaycount += 1
     recoverdcount = 0
+    counter += 1
 
     # dates.append(str((tweet_file.split(".")[0]).split("/")[1]))
     with open(tweet_file, 'r') as f:
@@ -84,6 +86,9 @@ for tweet_file in tweet_files:
                     if isrecovered(tweet["actor"]["preferredUsername"]) is True:
                         recoverdcount += 1
 
+        if recoverdcount > 394767:
+            print(counter)
+
         recoverdcount_by_day.append(recoverdcount)
 print(recoverdcount_by_day)
 print(user_num_by_day)
@@ -99,32 +104,33 @@ for r in recoverdcount_by_day:
     totalrecoved_by_day.append(count)
 
 
-#         new_users_by_day.append(newusercount)
-#         old_users_by_day.append(olderusercount)
 
-# new_users_by_day.remove(0)
-# old_users_by_day.remove(0)
+# #         new_users_by_day.append(newusercount)
+# #         old_users_by_day.append(olderusercount)
 
-a = np.array(recoverdcount_by_day, dtype=np.float)
-b = np.array(user_num_by_day, dtype=np.float)
+# # new_users_by_day.remove(0)
+# # old_users_by_day.remove(0)
 
-fractionrecovered = a/b
+# a = np.array(recoverdcount_by_day, dtype=np.float)
+# b = np.array(user_num_by_day, dtype=np.float)
 
-# total_users_by_day = a + b 
+# fractionrecovered = a/b
 
-# c = np.array(total_users_by_day, dtype=np.float)
+# # total_users_by_day = a + b 
 
-# fraction_new = a/c
-# fraction_old = b/c
-# print(dates)
-dates.remove('')
-x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-plt.plot(x, totalrecoved_by_day)
-# plt.plot(x, fraction_old, label="old users")
-plt.xlabel("time")
-plt.ylabel("total number of users recovered")
-# plt.legend(loc='upper left')
-plt.gcf().autofmt_xdate()
-plt.show()
+# # c = np.array(total_users_by_day, dtype=np.float)
+
+# # fraction_new = a/c
+# # fraction_old = b/c
+# # print(dates)
+# dates.remove('')
+# x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
+# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+# plt.plot(x, totalrecoved_by_day)
+# # plt.plot(x, fraction_old, label="old users")
+# plt.xlabel("time")
+# plt.ylabel("total number of users recovered")
+# # plt.legend(loc='upper left')
+# plt.gcf().autofmt_xdate()
+# plt.show()

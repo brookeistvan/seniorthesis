@@ -50,11 +50,13 @@ def flipstateS(states):
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]
+activelyinfected_by_iteration = [1]
 infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
 useractivedays = {}
 for i in range(426):
+    activelyinfected = 0 
     for node, state in infectedstates.items():
         if state == "I": 
             if node in useractivedays.keys():
@@ -68,6 +70,7 @@ for i in range(426):
                         if infectedstates[neighbor] == "S":
                             if flipstateI(neighbor) is True: 
                                 infectedstates[neighbor] = "I"
+                                activelyinfected += 1
                                 infectedcount += 1 
                                 susceptiblecount -= 1
             if flipstateR(node) is True:
@@ -116,6 +119,7 @@ for i in range(426):
     # print(infectedstates)
     # print(infectedcount)
     # print(recoveredcount)
+    activelyinfected_by_iteration.append(activelyinfected)
     infectedcount_by_iteration.append(infectedcount)
     recoveredcount_by_iteration.append(recoveredcount)
     susceptiblecount_by_iteration.append(susceptiblecount)
@@ -140,6 +144,7 @@ print(durationdict)
 x = []
 for n in range(len(infectedcount_by_iteration)):
     x.append(n)
+plt.plot(x, activelyinfected_by_iteration, label="actively infected")
 plt.plot(x, infectedcount_by_iteration, label="infected")
 plt.plot(x, recoveredcount_by_iteration, label="recovered")
 plt.plot(x, susceptiblecount_by_iteration, label="susceptible")

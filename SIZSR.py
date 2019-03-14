@@ -70,9 +70,11 @@ def flipstateS(states):
 reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
 recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]
+activelyinfected_by_iteration = [1]
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
 for i in range(426): #426
+    activelyinfected = 0 
     for node, state in infectedstates.items():
         if state == "I": 
             for key, neighbors in adjacencydict.items():
@@ -82,11 +84,13 @@ for i in range(426): #426
                             if neighbor in communities[0]:
                                 if flipstateI(neighbor) is True: 
                                     infectedstates[neighbor] = "I"
+                                    activelyinfected += 1
                                     infectedcount += 1 
                                     susceptiblecount -= 1
                             elif neighbor in communities[1]:
                                 if flipstateZ(neighbor) is True:
                                     infectedstates[neighbor] = "Z"
+                                    activelyinfected += 1 
                                     skepticcount += 1
                                     susceptiblecount -= 1
 
@@ -106,11 +110,13 @@ for i in range(426): #426
                             if neighborz in communities[1]:
                                 if flipstateZ(neighborz) is True:
                                     infectedstates[neighborz] = "Z"
+                                    activelyinfected += 1
                                     skepticcount += 1
                                     susceptiblecount -= 1
                             elif neighborz in communities[0]:
                                 if flipstateI(neighborz) is True:
                                     infectedstates[neighborz] = "I"
+                                    activelyinfected += 1
                                     infectedcount += 1 
                                     susceptiblecount -= 1
             if flipstateS(node) is True: 
@@ -141,6 +147,7 @@ for i in range(426): #426
     # print(infectedstates)
     # print(infectedcount)
     # print(recoveredcount)
+    activelyinfected_by_iteration.append(activelyinfected)
     infectedcount_by_iteration.append(infectedcount)
     skepticcount_by_iteration.append(skepticcount)
     recoveredcount_by_iteration.append(recoveredcount)
@@ -157,11 +164,12 @@ for i in range(426): #426
 x = []
 for n in range(len(infectedcount_by_iteration)):
     x.append(n)
+plt.plot(x, activelyinfected_by_iteration, label="activelyinfected")
 plt.plot(x, infectedcount_by_iteration, label="infected", color="r")
 plt.plot(x, skepticcount_by_iteration, label="skeptics", color="k")
-plt.plot(x, recoveredcount_by_iteration, label="recovered", color="b")
-plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color="g")
-plt.xlabel("iteration")
-plt.ylabel("number of infected nodes")
-plt.legend()
+# plt.plot(x, recoveredcount_by_iteration, label="recovered", color="b")
+# plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color="g")
+# plt.xlabel("iteration")
+# plt.ylabel("number of infected nodes")
+# plt.legend()
 plt.show()
