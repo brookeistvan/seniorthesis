@@ -57,14 +57,16 @@ c = np.array(total_users_by_day, dtype=np.float)
 fraction_new = a/c
 fraction_old = b/c
 
-dates.remove('')
-x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-plt.plot(x, fraction_new, label="new users")
-plt.plot(x, fraction_old, label="old users")
-plt.xlabel("time")
-plt.ylabel("fraction of users")
-plt.legend(loc='upper left')
-plt.gcf().autofmt_xdate()
-plt.show()
+print(np.mean(fraction_new))
+
+# dates.remove('')
+# x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
+# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+# plt.plot(x, fraction_new, label="new users")
+# plt.plot(x, fraction_old, label="old users")
+# plt.xlabel("time")
+# plt.ylabel("fraction of users")
+# plt.legend(loc='upper left')
+# plt.gcf().autofmt_xdate()
+# plt.show()

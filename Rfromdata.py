@@ -65,11 +65,9 @@ for tweet_file in tweet_files:
 
 recoverdcount_by_day= []
 newdaycount = 0
-counter = 0
 for tweet_file in tweet_files:
     newdaycount += 1
     recoverdcount = 0
-    counter += 1
 
     # dates.append(str((tweet_file.split(".")[0]).split("/")[1]))
     with open(tweet_file, 'r') as f:
@@ -86,13 +84,10 @@ for tweet_file in tweet_files:
                     if isrecovered(tweet["actor"]["preferredUsername"]) is True:
                         recoverdcount += 1
 
-        if recoverdcount > 394767:
-            print(counter)
-
         recoverdcount_by_day.append(recoverdcount)
-print(recoverdcount_by_day)
-print(user_num_by_day)
-print(tweets_by_day)
+# print(recoverdcount_by_day)
+# print(user_num_by_day)
+# print(tweets_by_day)
 
 recoverdcount_by_day.remove(0)
 user_num_by_day.remove(0)
@@ -102,6 +97,12 @@ totalrecoved_by_day = []
 for r in recoverdcount_by_day: 
     count += r 
     totalrecoved_by_day.append(count)
+
+count = 0 
+for i in totalrecoved_by_day:
+    count += 1
+    if i > 394767:
+        print(count)
 
 
 
