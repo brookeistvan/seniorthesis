@@ -49,12 +49,12 @@ def flipstateR(states):
 Gammabetaavgdurations = []
 Gammabetaavgnewusers = []
 Gammabetabetweeninfection = []
-for Gamma in range(2,8,2):
+for Gamma in range(2,32,2):
     # print(Gamma)
     betaavgdurations = []
     betaavgnewusers = []
     betbetweeninfection = []
-    for Beta in range(2,8,2):
+    for Beta in range(2,32,2):
         # print(Beta)
 
         # create dict for states and one infected
@@ -114,10 +114,8 @@ for Gamma in range(2,8,2):
 
 
             usersentering_by_iteration.append(activelyinfected)
-        print(usersentering_by_iteration)
         avgnewusers = np.mean(usersentering_by_iteration)
         betaavgnewusers.append(avgnewusers)
-        print(betaavgnewusers)
 
         betbetweeninfection.append(betweeninfection)
 
@@ -147,45 +145,43 @@ MEavgduration = []
 for row in Gammabetaavgdurations:
     for i in row:
         errori = (i - 28.0628477471)**2
-        print(errori)
         MEavgduration.append(errori) 
 
 
 MEbetweeninfection = []
 for row in Gammabetabetweeninfection:
     for j in row:
-        print(j)
         scaledj = j/(len(useractivedays))
-        print(scaledj)
         errorj = (j - 0.15)**2
-        print(errorj)
         MEbetweeninfection.append(errorj)
 
 
 # make sure its NEW users in the simulation in SIR it is but in other is not
 # Avg percent of users new
-MEavgnewusers = []
-for row in Gammabetaavgnewusers:
-    for k in row:
-        print(k)
-        scaledk = k/(len(useractivedays))
-        print(scaledk)
-        errork = (k - 0.549244279666)**2
-        print(errork)
-        MEavgnewusers.append(errork)
+# MEavgnewusers = []
+# for row in Gammabetaavgnewusers:
+#     for k in row:
+#         print(k)
+#         scaledk = k/(len(useractivedays))
+#         print(scaledk)
+#         errork = (k - 0.549244279666)**2
+#         print(errork)
+#         MEavgnewusers.append(errork)
 
 
-Meansqerror = map(sum, zip(MEavgnewusers, MEbetweeninfection, MEavgduration))
+Meansqerror = map(sum, zip(MEbetweeninfection, MEavgduration)) #use avgnewusers
 print(Meansqerror)
 
 print(min(Meansqerror))
 print(Meansqerror.index(min(Meansqerror))+1)
 
-Gamma = [2,4,6] #,8,10,12,14,16,18,20] #,22,24,26,28,30]
-Beta = [2,4,6] #,8,10,12,14,16,18,20] #,22,24,26,28,30]
+mesemap = [Meansqerror[i:i+15] for i in range(0, len(Meansqerror), 15)]
+
+Gamma = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30]
 
 fig, ax = plt.subplots()
-im = ax.imshow(Meansqerror)
+im = ax.imshow(mesemap)
 
 # We want to show all ticks...
 ax.set_xticks(np.arange(len(Beta)))
@@ -201,7 +197,7 @@ plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
 # Loop over data dimensions and create text annotations.
 for i in range(len(Gamma)):
     for j in range(len(Beta)):
-        text = ax.text(j, i, Meansqerror[i][j],
+        text = ax.text(j, i, mesemap[i][j],
                        ha="center", va="center", color="w")
 
 # ax.set_title("Harvest of local farmers (in tons/year)")

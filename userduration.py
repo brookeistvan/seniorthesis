@@ -6,6 +6,8 @@ import numpy as np
 import datetime as dt
 import matplotlib.dates as mdates
 import random
+from itertools import groupby
+from operator import itemgetter
  
 
 # Specify which directory the day tweet files are in
@@ -72,33 +74,61 @@ for tweet_file in tweet_files:
 infectedcount_by_day = []
 durations = []
 durationdict = {}
-stillinfected = {}
-for i in range(1,427):
-    stillinfected.update({i:0})
-print(stillinfected)
 
+## To plot number still infected
+# stillinfected = {}
+# for i in range(1,427):
+#     stillinfected.update({i:0})
+# print(stillinfected)
+
+# # to find long duration
+# for user1, activedays in rasterusers.items():
+#     duration = 0
+#     duration += (activedays[-1] - activedays[0])
+#     durations.append(duration)
+#     if duration in durationdict:
+#         durationdict[duration] += 1
+#     else:
+#         durationdict.update({duration:1})
+
+# to find short duration
+shortdurations = []
 for user1, activedays in rasterusers.items():
-    # duration = 0
-    # duration += (activedays[-1] - activedays[0])
-    # durations.append(duration)
-    # if duration in durationdict:
-    #     durationdict[duration] += 1
-    # else:
-    #     durationdict.update({duration:1})
-    for day in range(activedays[0], (activedays[-1]+1)):
-        stillinfected[day] += 1
-print(stillinfected)
-del stillinfected[1]
+    for k, g in groupby(enumerate(activedays), lambda (i, x): i-x):
+        shortdurations.append(len(map(itemgetter(1), g)))
 
-dates.remove('')
-x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-print(len(x))
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-plt.plot(x, stillinfected.values())
-plt.xlabel("time")
-plt.ylabel("number of users still infected")
-plt.show()
+print(np.mean(shortdurations))
+print(len(shortdurations))
+
+for d in shortdurations:
+    if d not in durationdict:
+        durationdict.update({d:1})
+    else:
+        durationdict[d] += 1
+
+print(durationdict)
+
+# avg of tweeters for a day who did not tweet the day before
+print(sum(k*v for k,v in durationdict.items()))
+print(sum(durationdict.values()))
+
+# avg of tweeters coming from between group who did not tweet the day before
+
+
+# # to calculate and plot number still infected
+#     for day in range(activedays[0], (activedays[-1]+1)):
+#         stillinfected[day] += 1
+# print(stillinfected)
+# del stillinfected[1]
+# dates.remove('')
+# x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
+# print(len(x))
+# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+# plt.plot(x, stillinfected.values())
+# plt.xlabel("time")
+# plt.ylabel("number of users still infected")
+# plt.show()
 
 # to find users who are still infected
 # for i in range(1,427):
@@ -109,7 +139,6 @@ plt.show()
 #     infectedcount_by_day.append(infectedcount)
 #     print(infectedcount_by_day)
 
-# print(infectedcount_by_day)
 
 # # Remove people who only appear on one day
 # onedaypeople = 0
@@ -129,10 +158,10 @@ plt.show()
 # print(greatthanhundredpeople)
 # print(np.mean(durations))
 
-# # graph key as x and value as y
-# plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
-# plt.xticks(range(len(durationdict)), list(durationdict.keys()))
-# plt.xlabel("number of days infected")
-# plt.ylabel("number of users infected x days")
-# plt.show()
+# graph key as x and value as y
+plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
+plt.xticks(range(len(durationdict)), list(durationdict.keys()))
+plt.xlabel("number of days infected")
+plt.ylabel("number of users infected x days")
+plt.show()
 
