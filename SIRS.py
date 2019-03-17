@@ -35,14 +35,14 @@ def flipstateI(node):
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 4:
+    if num2 < 20:
         return True
     return False
 
 
 def flipstateS(states):
     num3 = random.randint(0,99)
-    if num3 < 4:
+    if num3 < 5:
         return True
     return False
 

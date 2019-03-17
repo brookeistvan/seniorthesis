@@ -14,6 +14,7 @@ import io
 import numpy as np
 from networkx.algorithms.community import greedy_modularity_communities
 from operator import add
+import math
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
 G = nx.random_partition_graph([700,300],.1,.0125)
@@ -55,17 +56,17 @@ def flipstateS(states):
 EGBavgdurations  = []
 EGBavgnewusers = []
 EGBbetweeninfection = []
-for Epsilon in range(2,8,2): 
+for Epsilon in [3,6,9,12]: 
     print(Epsilon)
     Gammabetaavgdurations = []
     Gammabetaavgnewusers = []
     Gammabetabetweeninfection = []
-    for Gamma in [4,6,8]: 
+    for Gamma in [10,20,30,40]: 
         print(Gamma)
         betaavgdurations = []
         betaavgnewusers = []
         betbetweeninfection = []
-        for Beta in [0.5,1,1.5,2]: #,2.5,3,3.5,4]: #in range(2,8,2):
+        for Beta in [0.5,1,1.5,2,2.5]: #,2.5,3,3.5,4]: #in range(2,8,2):
             print(Beta)
 
             # create dict for states and one infected
@@ -79,8 +80,8 @@ for Epsilon in range(2,8,2):
             useractivedays = {}
             usersentering_by_iteration = []
             betweeninfection = 0 
-            newusers = 0 
             for i in range(426):
+                newusers = 0 
                 # activelyinfected = 0
                 for node, state in infectedstates.items():
                     if state == "I": 
@@ -104,7 +105,7 @@ for Epsilon in range(2,8,2):
                                                 if neighbor not in useractivedays.keys():
                                                     newusers += 1 
                                                 # activelyinfected += 1
-                                                betweeninfection += 1
+                                                    betweeninfection += 1
                         if flipstateR(node) is True:
                             infectedstates[node] = "R"
                     elif state == "Z":
@@ -128,7 +129,7 @@ for Epsilon in range(2,8,2):
                                                 if neighbor not in useractivedays.keys():
                                                     newusers += 1
                                                 # activelyinfected += 1 
-                                                betweeninfection += 1
+                                                    betweeninfection += 1
                         if flipstateR(node) is True:
                             infectedstates[node] = "R"
 
@@ -166,14 +167,19 @@ print(EGBavgnewusers)
 print("number of users between infection")
 print(EGBbetweeninfection)
 
+zavgduration =[]
 MEavgduration = []
 for a in EGBavgdurations:
     for row in a:
         for i in row:
             errori = np.round((i - 28.0628477471)**2,2)
             MEavgduration.append(errori) 
+m1 = np.mean(MEavgduration)
+sd1 = np.std(MEavgduration)
+for i in MEavgduration:
+    zavgduration.append((i-m1)/sd1)
 
-
+zbetweeninfection = []
 MEbetweeninfection = []
 for b in EGBbetweeninfection:
     for row in b:
@@ -181,10 +187,14 @@ for b in EGBbetweeninfection:
             scaledj = 100*(j/(len(useractivedays)))
             errorj = np.round((scaledj - 15)**2,2)
             MEbetweeninfection.append(errorj)
-
+m2 = np.mean(MEbetweeninfection)
+sd2 = np.std(MEbetweeninfection)
+for i in MEbetweeninfection:
+    zbetweeninfection.append((i-m2)/sd2)
 
 # make sure its NEW users in the simulation in SIR it is but in other is not
 # Avg percent of users new
+zavgnewusers = []
 MEavgnewusers = []
 for c in EGBavgnewusers:
     for row in c:
@@ -192,26 +202,36 @@ for c in EGBavgnewusers:
             scaledk = 100*(k/(len(useractivedays)))
             errork = np.round((scaledk - 54.9244279666)**2, 2)
             MEavgnewusers.append(errork)
+m3 = np.mean(MEavgnewusers)
+sd3 = np.std(MEavgnewusers)
+for i in MEavgnewusers:
+    zavgnewusers.append((i-m3)/sd3)
 
 print(MEavgnewusers)
 print(MEbetweeninfection)
 print(MEavgduration)
-Meansqerror = np.array(map(sum, zip(MEbetweeninfection, MEavgduration, MEavgnewusers))) #use avgnewusers
-print(Meansqerror)
+Meansqerror = np.array(map(sum, zip(zavgduration, zbetweeninfection, zavgnewusers))) #use avgnewusers
+m4 = np.mean(Meansqerror)
+sd4 = np.std(Meansqerror)
+zmsei = []
+for i in Meansqerror: 
+    zmsei.append((i-m4)/sd4)
+zmse = np.array(zmsei)
 
 print("Min MSE")
-print(min(Meansqerror))
-print(Meansqerror.index(min(Meansqerror))+1)
+print(min(zmse))
+print((zmse.tolist()).index(min(zmse))+1)
 
 # mesemap = [Meansqerror[i:i+8] for i in range(0, len(Meansqerror), 8)]
-mesemap = Meansqerror.reshape(3,3,4)
+mesemap = zmse.reshape(4,4,5)
 BGmap = np.round(mesemap.mean(axis=0),2)
 print(BGmap)
 
 
-Gamma = [2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Beta = [0.5,1,1.5,2] #2.5,3,3.5,4] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Epsilon = [2,4,6]
+Gamma = [10,20,30,40] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [0.5,1,1.5,2,2.5] #2.5,3,3.5,4] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Epsilon = [3,6,9,12]
+# 1,40,3
 
 fig, ax = plt.subplots()
 im = ax.imshow(BGmap)

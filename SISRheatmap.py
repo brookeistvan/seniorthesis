@@ -14,6 +14,7 @@ import io
 import numpy as np
 from networkx.algorithms.community import greedy_modularity_communities
 from operator import add
+import math
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
 G = nx.random_partition_graph([700,300],.1,.0125)
@@ -55,17 +56,17 @@ def flipstateS(states):
 EGBavgdurations  = []
 EGBavgnewusers = []
 EGBbetweeninfection = []
-for Epsilon in range(2,8,2): 
+for Epsilon in range(2,12,2): 
     print(Epsilon)
     Gammabetaavgdurations = []
     Gammabetaavgnewusers = []
     Gammabetabetweeninfection = []
-    for Gamma in range(2,8,2):
+    for Gamma in [5, 10, 15, 20, 25, 30]:
         print(Gamma)
         betaavgdurations = []
         betaavgnewusers = []
         betbetweeninfection = []
-        for Beta in [0.5,1,1.5,2]: #in range(2,8,2):
+        for Beta in [1,2,5,10,15]: #in range(2,8,2):
             print(Beta)
 
             # create dict for states and one infected
@@ -78,12 +79,15 @@ for Epsilon in range(2,8,2):
 
             useractivedays = {}
             usersentering_by_iteration = []
+            usersinfected_by_iteration = []
             betweeninfection = 0 
-            newusers = 0 
             for i in range(426):
+                newusers = 0
+                infecteds = 0
                 # activelyinfected = 0
                 for node, state in infectedstates.items():
                     if state == "I": 
+                        infecteds += 1
                         if node in useractivedays.keys():
                             useractivedays[node].append(i)
                         else:  
@@ -104,12 +108,13 @@ for Epsilon in range(2,8,2):
                                                 if neighbor not in useractivedays.keys():
                                                     newusers += 1 
                                                 # activelyinfected += 1
-                                                betweeninfection += 1
+                                                    betweeninfection += 1
                         if flipstateR(node) is True:
                             infectedstates[node] = "R"
                         elif flipstateS(node) is True: 
                             infectedstates[node] = "S"
                     elif state == "Z":
+                        infecteds += 1
                         if node in useractivedays.keys():
                             useractivedays[node].append(i)
                         else:  
@@ -130,14 +135,22 @@ for Epsilon in range(2,8,2):
                                                 if neighbor not in useractivedays.keys():
                                                     newusers += 1
                                                 # activelyinfected += 1 
-                                                betweeninfection += 1
+                                                    betweeninfection += 1
                         if flipstateR(node) is True:
                             infectedstates[node] = "R"
                         elif flipstateS(node) is True:
                             infectedstates[node] = "S"
 
+                usersinfected_by_iteration.append(infecteds)
                 usersentering_by_iteration.append(newusers)
-            avgnewusers = np.mean(usersentering_by_iteration)
+            print(usersinfected_by_iteration)
+            print(usersentering_by_iteration)
+            enteroverinfect = np.array(usersentering_by_iteration)/np.array(usersinfected_by_iteration)
+            avgnewusers = []
+            for i in enteroverinfect: 
+                if math.isnan(i) is False: 
+                    avgnewusers.append(i)
+            meannewusers = np.mean(np.array(avgnewusers))
             betaavgnewusers.append(avgnewusers)
             betbetweeninfection.append(betweeninfection)
 
@@ -166,47 +179,74 @@ print(EGBavgnewusers)
 print("number of users between infection")
 print(EGBbetweeninfection)
 
+zavgduration =[]
 MEavgduration = []
-for row in Gammabetaavgdurations:
-    for i in row:
-        errori = (i - 28.0628477471)**2
-        MEavgduration.append(errori) 
+for a in EGBavgdurations:
+    for row in a:
+        for i in row:
+            errori = np.round((i - 28.0628477471)**2,2)
+            MEavgduration.append(errori) 
+m1 = np.mean(MEavgduration)
+sd1 = np.std(MEavgduration)
+for i in MEavgduration:
+    zavgduration.append((i-m1)/sd1)
 
-
+zbetweeninfection = []
 MEbetweeninfection = []
-for row in Gammabetabetweeninfection:
-    for j in row:
-        scaledj = j/(len(useractivedays))
-        errorj = (j - 0.15)**2
-        MEbetweeninfection.append(errorj)
-
+for b in EGBbetweeninfection:
+    for row in b:
+        for j in row:
+            scaledj = 100*(j/(len(useractivedays)))
+            errorj = np.round((scaledj - 15)**2,2)
+            MEbetweeninfection.append(errorj)
+m2 = np.mean(MEbetweeninfection)
+sd2 = np.std(MEbetweeninfection)
+for i in MEbetweeninfection:
+    zbetweeninfection.append((i-m2)/sd2)
 
 # make sure its NEW users in the simulation in SIR it is but in other is not
 # Avg percent of users new
-# MEavgnewusers = []
-# for row in Gammabetaavgnewusers:
-#     for k in row:
-#         print(k)
-#         scaledk = k/(len(useractivedays))
-#         print(scaledk)
-#         errork = (k - 0.549244279666)**2
-#         print(errork)
-#         MEavgnewusers.append(errork)
+zavgnewusers = []
+MEavgnewusers = []
+for c in EGBavgnewusers:
+    for row in c:
+        for k in row:
+            scaledk = 100*(k)
+            errork = np.round((scaledk - 54.9244279666)**2, 2)
+            MEavgnewusers.append(errork)
+m3 = np.mean(MEavgnewusers)
+sd3 = np.std(MEavgnewusers)
+for i in MEavgnewusers:
+    zavgnewusers.append((i-m3)/sd3)
+
+print(MEavgnewusers)
+print(MEbetweeninfection)
+print(MEavgduration)
+Meansqerror = np.array(map(sum, zip(zavgduration, zbetweeninfection, zavgnewusers))) #use avgnewusers
+m4 = np.mean(Meansqerror)
+sd4 = np.std(Meansqerror)
+zmsei = []
+for i in Meansqerror: 
+    zmsei.append((i-m4)/sd4)
+zmse = np.array(zmsei)
+
+print("Min MSE")
+print(min(zmse))
+print((zmse.tolist()).index(min(zmse))+1)
+
+# mesemap = [Meansqerror[i:i+8] for i in range(0, len(Meansqerror), 8)]
+mesemap = zmse.reshape(5,6,5)
+BGmap = np.round(mesemap.mean(axis=0),2)
+print(BGmap)
 
 
-Meansqerror = map(sum, zip(MEbetweeninfection, MEavgduration)) #use avgnewusers
-print(Meansqerror)
-
-print(min(Meansqerror))
-print(Meansqerror.index(min(Meansqerror))+1)
-
-mesemap = [Meansqerror[i:i+4] for i in range(0, len(Meansqerror), 8)]
-
-Gamma = [2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Beta = [0.5,1,1.5,2] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Gamma = [5, 10, 15, 20, 25, 30] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [1,2,5,10,15] #2.5,3,3.5,4] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Epsilon = [2,4,6,8,10]
+# 1,40,3
 
 fig, ax = plt.subplots()
-im = ax.imshow(mesemap)
+im = ax.imshow(BGmap)
 
 # We want to show all ticks...
 ax.set_xticks(np.arange(len(Beta)))
@@ -222,11 +262,64 @@ plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
 # Loop over data dimensions and create text annotations.
 for i in range(len(Gamma)):
     for j in range(len(Beta)):
-        text = ax.text(j, i, mesemap[i][j],
+        text = ax.text(j, i, BGmap[i][j],
                        ha="center", va="center", color="w")
 
-# ax.set_title("Harvest of local farmers (in tons/year)")
 fig.tight_layout()
 plt.xlabel("Infection Rate (Beta)")
 plt.ylabel("Recovery Rate (Gamma)")
+plt.show()
+
+GEmap = np.round(mesemap.mean(axis=2),2)
+print(GEmap)
+fig, ax = plt.subplots()
+im = ax.imshow(GEmap)
+
+# We want to show all ticks...
+ax.set_xticks(np.arange(len(Gamma)))
+ax.set_yticks(np.arange(len(Epsilon)))
+# ... and label them with the respective list entries
+ax.set_xticklabels(Gamma)
+ax.set_yticklabels(Epsilon)
+
+# Rotate the tick labels and set their alignment.
+plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
+
+# Loop over data dimensions and create text annotations.
+for i in range(len(Epsilon)):
+    for j in range(len(Gamma)):
+        text = ax.text(j, i, GEmap[i][j],
+                       ha="center", va="center", color="w")
+
+fig.tight_layout()
+plt.xlabel("Recovery Rate (Gamma)")
+plt.ylabel("Recvoered to Susceptible Transition Rate (Epsilon)")
+plt.show()
+
+BEmap = np.round(mesemap.mean(axis=1),2)
+print(BEmap)
+fig, ax = plt.subplots()
+im = ax.imshow(BEmap)
+
+# We want to show all ticks...
+ax.set_xticks(np.arange(len(Beta)))
+ax.set_yticks(np.arange(len(Epsilon)))
+# ... and label them with the respective list entries
+ax.set_xticklabels(Beta)
+ax.set_yticklabels(Epsilon)
+
+# Rotate the tick labels and set their alignment.
+plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
+
+# Loop over data dimensions and create text annotations.
+for i in range(len(Epsilon)):
+    for j in range(len(Beta)):
+        text = ax.text(j, i, BEmap[i][j],
+                       ha="center", va="center", color="w")
+
+fig.tight_layout()
+plt.xlabel("Infection Rate (Beta)")
+plt.ylabel("Recovered to Susceptible Transition Rate (Epsilon)")
 plt.show()

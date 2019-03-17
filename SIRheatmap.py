@@ -14,6 +14,7 @@ import io
 import numpy as np
 from networkx.algorithms.community import greedy_modularity_communities
 from operator import add
+import math
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
 G = nx.random_partition_graph([700,300],.1,.0125)
@@ -152,7 +153,7 @@ MEbetweeninfection = []
 for row in Gammabetabetweeninfection:
     for j in row:
         scaledj = j/(len(useractivedays))
-        errorj = (j - 0.15)**2
+        errorj = (scaledj - 0.15)**2
         MEbetweeninfection.append(errorj)
 
 
