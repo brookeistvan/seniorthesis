@@ -79,12 +79,15 @@ for Epsilon in [3,6,9,12]:
 
             useractivedays = {}
             usersentering_by_iteration = []
+            usersinfected_by_iteration = []
             betweeninfection = 0 
             for i in range(426):
                 newusers = 0 
+                infecteds = 0
                 # activelyinfected = 0
                 for node, state in infectedstates.items():
                     if state == "I": 
+                        infecteds += 1
                         if node in useractivedays.keys():
                             useractivedays[node].append(i)
                         else:  
@@ -109,6 +112,7 @@ for Epsilon in [3,6,9,12]:
                         if flipstateR(node) is True:
                             infectedstates[node] = "R"
                     elif state == "Z":
+                        infecteds += 1
                         if node in useractivedays.keys():
                             useractivedays[node].append(i)
                         else:  
@@ -138,8 +142,14 @@ for Epsilon in [3,6,9,12]:
                             infectedstates[node] = "S"
 
                 usersentering_by_iteration.append(newusers)
-            avgnewusers = np.mean(usersentering_by_iteration)
-            betaavgnewusers.append(np.array(avgnewusers))
+                usersinfected_by_iteration.append(infecteds)
+            enteroverinfect = np.array(usersentering_by_iteration)/np.array(usersinfected_by_iteration)
+            avgnewusers = []
+            for i in enteroverinfect: 
+                if math.isnan(i) is False: 
+                    avgnewusers.append(i)
+            meannewusers = np.mean(np.array(avgnewusers))
+            betaavgnewusers.append(meannewusers)
             betbetweeninfection.append(np.array(betweeninfection))
 
 
@@ -199,7 +209,7 @@ MEavgnewusers = []
 for c in EGBavgnewusers:
     for row in c:
         for k in row:
-            scaledk = 100*(k/(len(useractivedays)))
+            scaledk = 100*(k)
             errork = np.round((scaledk - 54.9244279666)**2, 2)
             MEavgnewusers.append(errork)
 m3 = np.mean(MEavgnewusers)

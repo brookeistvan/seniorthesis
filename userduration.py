@@ -112,8 +112,6 @@ print(durationdict)
 print(sum(k*v for k,v in durationdict.items()))
 print(sum(durationdict.values()))
 
-# avg of tweeters coming from between group who did not tweet the day before
-
 
 # # to calculate and plot number still infected
 #     for day in range(activedays[0], (activedays[-1]+1)):

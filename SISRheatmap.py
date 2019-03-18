@@ -143,15 +143,13 @@ for Epsilon in range(2,12,2):
 
                 usersinfected_by_iteration.append(infecteds)
                 usersentering_by_iteration.append(newusers)
-            print(usersinfected_by_iteration)
-            print(usersentering_by_iteration)
             enteroverinfect = np.array(usersentering_by_iteration)/np.array(usersinfected_by_iteration)
             avgnewusers = []
             for i in enteroverinfect: 
                 if math.isnan(i) is False: 
                     avgnewusers.append(i)
             meannewusers = np.mean(np.array(avgnewusers))
-            betaavgnewusers.append(avgnewusers)
+            betaavgnewusers.append(meannewusers)
             betbetweeninfection.append(betweeninfection)
 
 

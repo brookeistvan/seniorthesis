@@ -145,29 +145,27 @@ print(Gammabetabetweeninfection)
 MEavgduration = []
 for row in Gammabetaavgdurations:
     for i in row:
-        errori = (i - 28.0628477471)**2
+        errori = np.round((i - 28.0628477471)**2,2)
         MEavgduration.append(errori) 
 
 
 MEbetweeninfection = []
 for row in Gammabetabetweeninfection:
     for j in row:
-        scaledj = j/(len(useractivedays))
-        errorj = (scaledj - 0.15)**2
+        scaledj = 100*(j/(len(useractivedays)))
+        errorj = np.round((scaledj - 15)**2,2)
         MEbetweeninfection.append(errorj)
 
 
 # make sure its NEW users in the simulation in SIR it is but in other is not
 # Avg percent of users new
-# MEavgnewusers = []
-# for row in Gammabetaavgnewusers:
-#     for k in row:
-#         print(k)
-#         scaledk = k/(len(useractivedays))
-#         print(scaledk)
-#         errork = (k - 0.549244279666)**2
-#         print(errork)
-#         MEavgnewusers.append(errork)
+MEavgnewusers = []
+for row in Gammabetaavgnewusers:
+    for k in row:
+        scaledk = 100*(k)
+        errork = np.round((scaledk - 54.9244279666)**2, 2)
+        MEavgnewusers.append(errork)
+       
 
 
 Meansqerror = map(sum, zip(MEbetweeninfection, MEavgduration)) #use avgnewusers

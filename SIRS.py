@@ -46,6 +46,13 @@ def flipstateS(states):
         return True
     return False
 
+# def isrecovered(username):
+#     for key, value in users_by_day.items():
+#         if key > newdaycount:
+#             if username in users_by_day[key]:
+#                 return False
+#     return True
+
 # reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
@@ -55,10 +62,15 @@ infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
 useractivedays = {}
+# users_by_day = {}
+# user_num_by_day = []
+# tweets_by_day = []
 for i in range(426):
     activelyinfected = 0 
+    # todaysusers = {"removeme"}
     for node, state in infectedstates.items():
         if state == "I": 
+            # todaysusers.add(node)
             if node in useractivedays.keys():
                 useractivedays[node].append(i)
             else:  
@@ -119,14 +131,17 @@ for i in range(426):
     # print(infectedstates)
     # print(infectedcount)
     # print(recoveredcount)
+    
+    # todaysusers.remove("removeme")
+    # users_by_day.update({i:todaysusers})
+    # user_num_by_day.append(len(todaysusers))
     activelyinfected_by_iteration.append(activelyinfected)
     infectedcount_by_iteration.append(infectedcount)
     recoveredcount_by_iteration.append(recoveredcount)
     susceptiblecount_by_iteration.append(susceptiblecount)
 
 
-# print(useractivedays)
-
+# Long duration
 durations = []
 durationdict = {}
 for user, activedays in useractivedays.items():
@@ -140,19 +155,38 @@ for user, activedays in useractivedays.items():
 
 print(durationdict)
 
+
+# To calculate and plot number still infected
+stillinfected = {}
+for i in range(427):
+    stillinfected.update({i:0})
+for user, activedays in useractivedays.items():
+    for day in range(activedays[0], (activedays[-1]+1)):
+        stillinfected[day] += 1
+print(len(stillinfected))
+
+# Short graph
 # want number of iterations (x) and the number of infecteds (y)
 x = []
 for n in range(len(infectedcount_by_iteration)):
     x.append(n)
+print(len(x))
 plt.plot(x, activelyinfected_by_iteration, label="actively infected")
 plt.plot(x, infectedcount_by_iteration, label="infected")
 plt.plot(x, recoveredcount_by_iteration, label="recovered")
 plt.plot(x, susceptiblecount_by_iteration, label="susceptible")
+plt.plot(x, stillinfected.values(), label="still infected")
 plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()
 plt.show()
 
+# Long graph
+plt.plot(x, stillinfected.values(), label="still infected")
+plt.xlabel("iteration")
+plt.ylabel("number of infected nodes")
+plt.legend()
+plt.show()
 # # graph key as x and value as y
 # plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
 # plt.xticks(range(len(durationdict)), list(durationdict.keys()))
