@@ -1,2 +1,2 @@
 # seniorthesis
-Pulling twitter data for thesis research 
+Repository of code used for thesis data analysis and simulation building
