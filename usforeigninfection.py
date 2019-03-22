@@ -131,15 +131,15 @@ print((sum(usretweetforeign_by_day)+sum(foreignretweetus_by_day))/(len(usretweet
 # fraction_of_quotes = b/d
 # fraction_of_replies = c/d 
 
-# dates.remove('')
-# x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-# # plt.plot(x, np.log(new_users_by_day), label="new users")
-# plt.plot(x, usretweetforeign_by_day, label="us retweet foreign")
-# plt.plot(x, foreignretweetus_by_day, label="foreign retweet us")
-# plt.gcf().autofmt_xdate()
-# plt.xlabel("time")
-# plt.ylabel("number of users entering dataset")
-# plt.legend()
-# plt.show()
+dates.remove('')
+x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+# plt.plot(x, np.log(new_users_by_day), label="new users")
+plt.plot(x, usretweetforeign_by_day, label="us retweet foreign", color="b")
+plt.plot(x, foreignretweetus_by_day, label="foreign retweet us", color="r")
+plt.gcf().autofmt_xdate()
+plt.xlabel("time")
+plt.ylabel("number of users entering dataset")
+plt.legend()
+plt.show()

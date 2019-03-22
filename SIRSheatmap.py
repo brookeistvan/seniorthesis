@@ -184,10 +184,9 @@ for a in EGBavgdurations:
         for i in row:
             errori = np.round((i - 28.0628477471)**2,2)
             MEavgduration.append(errori) 
-m1 = np.mean(MEavgduration)
 sd1 = np.std(MEavgduration)
 for i in MEavgduration:
-    zavgduration.append((i-m1)/sd1)
+    zavgduration.append(i/sd1)
 
 zbetweeninfection = []
 MEbetweeninfection = []
@@ -197,10 +196,9 @@ for b in EGBbetweeninfection:
             scaledj = 100*(j/(len(useractivedays)))
             errorj = np.round((scaledj - 15)**2,2)
             MEbetweeninfection.append(errorj)
-m2 = np.mean(MEbetweeninfection)
 sd2 = np.std(MEbetweeninfection)
 for i in MEbetweeninfection:
-    zbetweeninfection.append((i-m2)/sd2)
+    zbetweeninfection.append(i/sd2)
 
 # make sure its NEW users in the simulation in SIR it is but in other is not
 # Avg percent of users new
@@ -212,28 +210,26 @@ for c in EGBavgnewusers:
             scaledk = 100*(k)
             errork = np.round((scaledk - 54.9244279666)**2, 2)
             MEavgnewusers.append(errork)
-m3 = np.mean(MEavgnewusers)
 sd3 = np.std(MEavgnewusers)
 for i in MEavgnewusers:
-    zavgnewusers.append((i-m3)/sd3)
+    zavgnewusers.append(i/sd3)
 
 print(MEavgnewusers)
 print(MEbetweeninfection)
 print(MEavgduration)
 Meansqerror = np.array(map(sum, zip(zavgduration, zbetweeninfection, zavgnewusers))) #use avgnewusers
-m4 = np.mean(Meansqerror)
-sd4 = np.std(Meansqerror)
-zmsei = []
-for i in Meansqerror: 
-    zmsei.append((i-m4)/sd4)
-zmse = np.array(zmsei)
+# sd4 = np.std(Meansqerror)
+# zmsei = []
+# for i in Meansqerror: 
+#     zmsei.append(i/sd4)
+# zmse = np.array(zmsei)
 
 print("Min MSE")
-print(min(zmse))
-print((zmse.tolist()).index(min(zmse))+1)
+print(min(Meansqerror))
+print((Meansqerror.tolist()).index(min(Meansqerror))+1)
 
 # mesemap = [Meansqerror[i:i+8] for i in range(0, len(Meansqerror), 8)]
-mesemap = zmse.reshape(4,4,5)
+mesemap = Meansqerror.reshape(4,4,5)
 BGmap = np.round(mesemap.mean(axis=0),2)
 print(BGmap)
 
@@ -294,7 +290,7 @@ for i in range(len(Epsilon)):
 # ax.set_title("Harvest of local farmers (in tons/year)")
 fig.tight_layout()
 plt.xlabel("Recovery Rate (Gamma)")
-plt.ylabel("Recvoered to Susceptible Transition Rate (Epsilon)")
+plt.ylabel("Recvoered to Susceptible Transition Rate (Xi)")
 plt.show()
 
 BEmap = np.round(mesemap.mean(axis=1),2)
@@ -322,5 +318,5 @@ for i in range(len(Epsilon)):
 # ax.set_title("Harvest of local farmers (in tons/year)")
 fig.tight_layout()
 plt.xlabel("Infection Rate (Beta)")
-plt.ylabel("Recovered to Susceptible Transition Rate (Epsilon)")
+plt.ylabel("Recovered to Susceptible Transition Rate (Xi)")
 plt.show()

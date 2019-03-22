@@ -91,24 +91,24 @@ all_tweet_count.remove(0)
 enlangcount_by_day.remove(0)
 otherlangcount_by_day.remove(0)
 
-# d = np.array(all_tweet_count, dtype=np.float)
-# a = np.array(enlangcount_by_day, dtype=np.float)
-# b = np.array(otherlangcount_by_day, dtype=np.float)
+d = np.array(all_tweet_count, dtype=np.float)
+a = np.array(enlangcount_by_day, dtype=np.float)
+b = np.array(otherlangcount_by_day, dtype=np.float)
 
-# fraction_of_enlang = a/d
-# fraction_of_other = b/d
+fraction_of_enlang = a/d
+fraction_of_other = b/d
 y = [ enlangcount_by_day, otherlangcount_by_day ]
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-plt.plot([],[], color='b', label='English', linewidth=5)
-plt.plot([],[], color='r', label='Foreign', linewidth=5)
-plt.stackplot(x, enlangcount_by_day,otherlangcount_by_day, colors=['b','r'])
+# plt.plot([],[], color='b', label='English', linewidth=5)
+# plt.plot([],[], color='r', label='Foreign', linewidth=5)
+# plt.stackplot(x, enlangcount_by_day,otherlangcount_by_day, colors=['b','r'])
 
 # plt.stackplot(x,enlangcount_by_day, otherlangcount_by_day, label=['English Primary', 'Other Primary'])
-# plt.plot(x, fraction_of_enlang, label="English primary")
-# plt.plot(x, fraction_of_other, label="Other primary")
+plt.plot(x, fraction_of_enlang, label="English primary", color="b")
+plt.plot(x, fraction_of_other, label="Other primary", color="r")
 plt.xlabel("time")
 plt.ylabel("number of tweets")
 plt.gcf().autofmt_xdate()

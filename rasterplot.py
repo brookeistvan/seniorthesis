@@ -44,7 +44,7 @@ for tweet_file in tweet_files:
 print(len(users))
 commonusers = {}
 for user, count in users.items():
-    if count > 100:
+    if count > 500:
         commonusers.update({user:count})
 
 datecount = 0 

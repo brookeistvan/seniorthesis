@@ -11,7 +11,7 @@ import time
 import sys
 import io
 
-outputDir = "/Users/jayistvan/Documents/Thesis/" #Output directory
+outputDir = "/Users/brookeistvan/documents/Thesis/" #Output directory
 #os.system("mkdir -p %s"%(outputDir)) #Create directory if doesn't exist
 
 def parse(graph,tweet):
@@ -65,7 +65,7 @@ graph = nx.DiGraph()
 # # Prepend directory to each tweet filename
 # tweet_files = [tweet_files_dir+'/'+filename for filename in tweet_files]
 
-tweet_file = 'metoo/2018-07-06.txt'
+tweet_file = 'metoo/2018-01-29.txt'
 
 # Loop over all tweet files
 # for tweet_file in tweet_files:

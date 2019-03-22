@@ -89,6 +89,8 @@ fraction_of_news = a/d
 # plt.plot(x, np.log(tweet_count_by_day))
 # plt.gcf().autofmt_xdate()
 # plt.show()
+print("mean fraction of news")
+print(np.mean(fraction_of_news))
 
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
@@ -104,8 +106,8 @@ ax1.tick_params(axis='y', labelcolor=color)
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
 color = 'blue'
-ax2.set_ylabel('number of tweets from news outlets', color=color)  # we already handled the x-label with ax1
-ax2.plot(x, news_count_by_day, color=color)
+ax2.set_ylabel('log number of tweets from news outlets', color=color)  # we already handled the x-label with ax1
+ax2.plot(x, np.log(news_count_by_day), color=color)
 ax2.tick_params(axis='y', labelcolor=color)
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 plt.gca().xaxis.set_major_locator(mdates.DayLocator())

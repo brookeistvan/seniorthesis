@@ -49,5 +49,7 @@ x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
 plt.plot(x, new_users_by_day)
+plt.ylabel("number of new users")
+plt.xlabel("time")
 plt.gcf().autofmt_xdate()
 plt.show()

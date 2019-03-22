@@ -81,38 +81,39 @@ durationdict = {}
 #     stillinfected.update({i:0})
 # print(stillinfected)
 
-# # to find long duration
-# for user1, activedays in rasterusers.items():
-#     duration = 0
-#     duration += (activedays[-1] - activedays[0])
-#     durations.append(duration)
-#     if duration in durationdict:
-#         durationdict[duration] += 1
-#     else:
-#         durationdict.update({duration:1})
-
-# to find short duration
-shortdurations = []
+# to find long duration
 for user1, activedays in rasterusers.items():
-    for k, g in groupby(enumerate(activedays), lambda (i, x): i-x):
-        shortdurations.append(len(map(itemgetter(1), g)))
-
-print(np.mean(shortdurations))
-print(len(shortdurations))
-
-for d in shortdurations:
-    if d not in durationdict:
-        durationdict.update({d:1})
+    duration = 0
+    duration += (activedays[-1] - activedays[0])
+    durations.append(duration)
+    if duration in durationdict:
+        durationdict[duration] += 1
     else:
-        durationdict[d] += 1
+        durationdict.update({duration:1})
 
-print(durationdict)
+###
+# # to find short duration
+# shortdurations = []
+# for user1, activedays in rasterusers.items():
+#     for k, g in groupby(enumerate(activedays), lambda (i, x): i-x):
+#         shortdurations.append(len(map(itemgetter(1), g)))
 
-# avg of tweeters for a day who did not tweet the day before
-print(sum(k*v for k,v in durationdict.items()))
-print(sum(durationdict.values()))
+# print(np.mean(shortdurations))
+# print(len(shortdurations))
 
+# for d in shortdurations:
+#     if d not in durationdict:
+#         durationdict.update({d:1})
+#     else:
+#         durationdict[d] += 1
 
+# print(durationdict)
+
+# # avg of tweeters for a day who did not tweet the day before
+# print(sum(k*v for k,v in durationdict.items()))
+# print(sum(durationdict.values()))
+
+###
 # # to calculate and plot number still infected
 #     for day in range(activedays[0], (activedays[-1]+1)):
 #         stillinfected[day] += 1
@@ -138,27 +139,33 @@ print(sum(durationdict.values()))
 #     print(infectedcount_by_day)
 
 
-# # Remove people who only appear on one day
-# onedaypeople = 0
-# greatthanhundredpeople = 0
-# for k,v in durationdict.items():
-#     if k == 0:
-#         onedaypeople = v
-#         del durationdict[k]
+# Remove people who only appear on one day
+newdurationdict = {"0":0, "Everything >0":0}
+onedaypeople = 0
+greatthanhundredpeople = 0
+for k,v in durationdict.items():
+    # if k == 0:
+    #     onedaypeople = v
+    #     del durationdict[k]
 
-#     if k > 50:
-#         greatthanhundredpeople += v 
-#         del durationdict[k]
+    # if k > 50:
+    #     greatthanhundredpeople += v 
+    #     del durationdict[k]
+    if k == 0:
+        newdurationdict["0"] = v
+    if k != 0:
+        newdurationdict["Everything >0"] += v
 
 
 # print(durationdict)
 # print(onedaypeople)
-# print(greatthanhundredpeople)
+print(greatthanhundredpeople)
 # print(np.mean(durations))
+print(newdurationdict)
 
 # graph key as x and value as y
-plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
-plt.xticks(range(len(durationdict)), list(durationdict.keys()))
+plt.bar(range(len(newdurationdict)), list(newdurationdict.values()), align='center')
+plt.xticks(range(len(newdurationdict)), list(newdurationdict.keys()))
 plt.xlabel("number of days infected")
 plt.ylabel("number of users infected x days")
 plt.show()

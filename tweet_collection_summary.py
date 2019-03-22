@@ -13,8 +13,8 @@ hashtags = ['metoo'] #blacklivesmatter
 # Assumed that there is a directory of data, which contains directories of
 # hashtags. In each hashtag directory are tweet files for that hashtag
 #. ex. data/blacklivesmatter contains tweet files of JSON tweet objects
-data_dir = 'dec 11'      # data   # where hashtag directories are
-summary_dir = 'dec 11 summary' #output_dir # where to output summaries (make sure directory exists)
+data_dir = 'dec 17 2017'      # data   # where hashtag directories are
+summary_dir = 'dec 17 2017 summary' #output_dir # where to output summaries (make sure directory exists)
 
 # Make output folder for each hashtag
 for hashtag in hashtags:
