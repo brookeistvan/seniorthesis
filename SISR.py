@@ -15,37 +15,45 @@ import io
 G = nx.random_partition_graph([700,300],.1,.0125)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 
+# G = nx.planted_partition_graph(2, 100, 0.5, 0.1,seed=42)
+# adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
+
 # create dict for states and one infected
 infectedstates = {}
 for n in range(len(adjacencydict)):
-    infectedstates.update({n:"S"})
+	infectedstates.update({n:"S"})
 
 startnode = random.randint(0,len(adjacencydict)) 
 infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 4: 
+    if num < 12:
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 5:
+    if num2 < 10:
+        return True
+    return False
+
+
+def flipstateS(states):
+    num3 = random.randint(0,99)
+    if num3 < 50:
         return True
     return False
 
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]
-activelyinfected_by_iteration = [1]
 infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
-useractivedays ={}
+useractivedays = {}
 for i in range(426):
-    activelyinfected = 0
     for node, state in infectedstates.items():
         if state == "I": 
             if node in useractivedays.keys():
@@ -58,33 +66,25 @@ for i in range(426):
                         if infectedstates[neighbor] == "S":
                             if flipstateI(neighbor) is True: 
                                 infectedstates[neighbor] = "I"
-                                activelyinfected += 1
                                 infectedcount += 1 
                                 susceptiblecount -= 1
-            if flipstateR(node) is True:
+            if flipstateS(node) is True: 
+                infectedstates[node] = "S"
+                susceptiblecount += 1
+                infectedcount -= 1
+            elif flipstateR(node) is True:
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 infectedcount -= 1
-    # print(infectedstates)
-    # print(infectedcount)
-    # print(recoveredcount)
-    if infectedcount < 100:
-        print(i)
 
-    activelyinfected_by_iteration.append(activelyinfected)
+
+    # activelyinfected_by_iteration.append(activelyinfected)
     infectedcount_by_iteration.append(infectedcount)
     recoveredcount_by_iteration.append(recoveredcount)
     susceptiblecount_by_iteration.append(susceptiblecount)
 
-# print(infectedcount_by_iteration)
-# print(recoveredcount_by_iteration)
 
-# # export graph so can be visualized
-# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-# nx.write_gexf(G, outputdir+"SIRgraph.gexf")
-
-# print(useractivedays)
-
+# Long duration
 durations = []
 durationdict = {}
 for user, activedays in useractivedays.items():
@@ -96,10 +96,10 @@ for user, activedays in useractivedays.items():
     else:
         durationdict.update({duration:1})
 
+print(durationdict)
 sumd = 0 
 for k,v in durationdict.items():
     sumd += k*v
-print("average user duration")
 print(sumd/(1000))    
 
 
@@ -112,30 +112,45 @@ for user, activedays in useractivedays.items():
         stillinfected[day] += 1
 print(len(stillinfected))
 
-
-print(activelyinfected_by_iteration)
+# Short graph
 # want number of iterations (x) and the number of infecteds (y)
 x = []
 for n in range(len(infectedcount_by_iteration)):
     x.append(n)
-plt.plot(x, activelyinfected_by_iteration, label="infected that day")
-plt.show()
-plt.plot(x, infectedcount_by_iteration, label="infected")
+print(len(x))
+# plt.plot(x, activelyinfected_by_iteration, label="actively infected")
+# plt.plot(x, infectedcount_by_iteration, label="infected")
 plt.plot(x, recoveredcount_by_iteration, label="recovered", color='g')
-plt.plot(x, stillinfected.values(), label="infected", color='r')
 plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color='b')
+plt.plot(x, stillinfected.values(), label="infected", color='r')
 plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()
 plt.show()
 
-
+# Long graph
+plt.plot(x, stillinfected.values(), label="still infected")
+plt.xlabel("iteration")
+plt.ylabel("number of infected nodes")
+plt.legend()
+plt.show()
+# # graph key as x and value as y
+# plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
+# plt.xticks(range(len(durationdict)), list(durationdict.keys()))
+bins = []
 alldurations = list(durationdict.keys())
-bins = list(range(max(alldurations)))
+for i in range(0,(max(alldurations)+50),10):
+    bins.append(i)
+
+print(bins)
 # print(bins)
 # print(max(alldurations))
 
-plt.hist(durations)
+plt.hist(durations, bins)
+plt.xticks(range(0,(max(alldurations)+50),10), bins)
 plt.xlabel("number of days infected")
 plt.ylabel("number of nodes infected x days")
 plt.show()
+
+
+

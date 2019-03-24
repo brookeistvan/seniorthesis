@@ -58,17 +58,17 @@ for iteration in range(3):
     EGBavgdurations  = []
     EGBavgnewusers = []
     EGBbetweeninfection = []
-    for Epsilon in range(2,8,2): 
+    for Epsilon in [10, 20, 30,40,50,60]: 
         print(Epsilon)
         Gammabetaavgdurations = []
         Gammabetaavgnewusers = []
         Gammabetabetweeninfection = []
-        for Gamma in [5, 10, 15]:
+        for Gamma in [2, 5, 10, 15, 20,25]:
             print(Gamma)
             betaavgdurations = []
             betaavgnewusers = []
             betbetweeninfection = []
-            for Beta in [1,2,5]: #in range(2,8,2):
+            for Beta in [2,4,6,8,10,12,14]: #in range(2,8,2):
                 print(Beta)
 
                 # create dict for states and one infected
@@ -128,13 +128,13 @@ for iteration in range(3):
                                             if neighborz in communities[1]:
                                                 if flipstateZ(neighborz) is True:
                                                     infectedstates[neighborz] = "Z"
-                                                    if neighbor not in useractivedays.keys():
+                                                    if neighborz not in useractivedays.keys():
                                                         newusers += 1
                                                     # activelyinfected += 1
                                             elif neighborz in communities[0]:
                                                 if flipstateI(neighborz) is True:
                                                     infectedstates[neighborz] = "I"
-                                                    if neighbor not in useractivedays.keys():
+                                                    if neighborz not in useractivedays.keys():
                                                         newusers += 1
                                                     # activelyinfected += 1 
                                                         betweeninfection += 1
@@ -240,19 +240,22 @@ print(zippedmse)
 stdmse = [np.std(i) for i in zippedmse]
 avgmse = np.array([np.mean(item) for item in zippedmse])
 print(avgmse)
+print("min avg mse")
+print(min(avgmse))
+print((avgmse.tolist()).index(min(avgmse))+1)
 print("standard deviations")
 print(stdmse)
 
 # mesemap = [Meansqerror[i:i+8] for i in range(0, len(Meansqerror), 8)]
 # epsilon, gamma, beta
-mesemap = avgmse.reshape(3,3,3)
+mesemap = avgmse.reshape(6,6,7)
 BGmap = np.round(mesemap.mean(axis=0),2)
 print(BGmap)
 
 
-Gamma = [5, 10, 15] #, 20, 25, 30] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Beta = [1,2,5] #,10,15] #2.5,3,3.5,4] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Epsilon = [2,4,6] #,8,10]
+Gamma = [2,5,10,15,20,25] #, 20, 25, 30] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [2,4,6,8,10,12,14] #,10,15] #2.5,3,3.5,4] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Epsilon = [10,20,30,40,50,60] #,8,10]
 # 1,40,3
 
 fig, ax = plt.subplots()

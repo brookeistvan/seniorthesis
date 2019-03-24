@@ -47,142 +47,176 @@ def flipstateR(states):
         return True
     return False
 
-Gammabetaavgdurations = []
-Gammabetaavgnewusers = []
-Gammabetabetweeninfection = []
-for Gamma in range(2,32,2):
-    # print(Gamma)
-    betaavgdurations = []
-    betaavgnewusers = []
-    betbetweeninfection = []
-    for Beta in range(2,32,2):
-        # print(Beta)
 
-        # create dict for states and one infected
-        infectedstates = {}
-        for n in range(len(adjacencydict)):
-            infectedstates.update({n:"S"})
+mses = []
+for iteration in range(3):
+    Gammabetaavgdurations = []
+    Gammabetaavgnewusers = []
+    Gammabetabetweeninfection = []
+    for Gamma in [2, 5, 10, 15, 20,25]: 
+        # print(Gamma)
+        betaavgdurations = []
+        betaavgnewusers = []
+        betbetweeninfection = []
+        for Beta in [2,4,6,8,10,12]:
+            # print(Beta)
 
-        startnode = random.randint(0,len(communities[0])) 
-        infectedstates.update({startnode:"I"})
+            # create dict for states and one infected
+            infectedstates = {}
+            for n in range(len(adjacencydict)):
+                infectedstates.update({n:"S"})
 
-        useractivedays = {}
-        usersentering_by_iteration = []
-        betweeninfection = 0 
-        for i in range(426):
-            activelyinfected = 0
-            for node, state in infectedstates.items():
-                if state == "I": 
-                    if node in useractivedays.keys():
-                        useractivedays[node].append(i)
-                    else:  
-                        useractivedays.update({node:[i]})
-                    for key, neighbors in adjacencydict.items():
-                        if key == node: 
-                            for neighbor in neighbors:
-                                if infectedstates[neighbor] == "S":
-                                    if neighbor in communities[0]:
-                                        if flipstateI(neighbor) is True: 
-                                            infectedstates[neighbor] = "I"
-                                            activelyinfected += 1
-                                    elif neighbor in communities[1]:
-                                        if flipstateZ(neighbor) is True: 
-                                            infectedstates[neighbor] = "Z"
-                                            activelyinfected += 1
-                                            betweeninfection += 1
-                    if flipstateR(node) is True:
-                        infectedstates[node] = "R"
-                elif state == "Z":
-                    if node in useractivedays.keys():
-                        useractivedays[node].append(i)
-                    else:  
-                        useractivedays.update({node:[i]})
-                    for keyz, neighborsz in adjacencydict.items():
-                        if keyz == node:
-                            for neighborz in neighborsz:
-                                if infectedstates[neighborz] == "S":
-                                    if neighborz in communities[1]:
-                                        if flipstateZ(neighborz) is True:
-                                            infectedstates[neighborz] = "Z"
-                                            activelyinfected += 1
-                                    elif neighborz in communities[0]:
-                                        if flipstateI(neighborz) is True:
-                                            infectedstates[neighborz] = "I"
-                                            activelyinfected += 1 
-                                            betweeninfection += 1
-                    if flipstateR(node) is True:
-                        infectedstates[node] = "R"
+            startnode = random.randint(0,len(communities[0])) 
+            infectedstates.update({startnode:"I"})
+
+            useractivedays = {}
+            usersentering_by_iteration = []
+            usersinfected_by_iteration = []
+            betweeninfection = 0 
+            for i in range(426):
+                infecteds = 0
+                newusers = 0 
+                # activelyinfected = 0
+                for node, state in infectedstates.items():
+                    if state == "I": 
+                        infecteds += 1
+                        if node in useractivedays.keys():
+                            useractivedays[node].append(i)
+                        else:  
+                            useractivedays.update({node:[i]})
+                        for key, neighbors in adjacencydict.items():
+                            if key == node: 
+                                for neighbor in neighbors:
+                                    if infectedstates[neighbor] == "S":
+                                        if neighbor in communities[0]:
+                                            if flipstateI(neighbor) is True: 
+                                                infectedstates[neighbor] = "I"
+                                                if neighbor not in useractivedays.keys():
+                                                    newusers += 1
+                                        elif neighbor in communities[1]:
+                                            if flipstateZ(neighbor) is True: 
+                                                infectedstates[neighbor] = "Z"
+                                                if neighbor not in useractivedays.items():
+                                                    newusers += 1
+                                                    betweeninfection += 1
+                        if flipstateR(node) is True:
+                            infectedstates[node] = "R"
+                    elif state == "Z":
+                        if node in useractivedays.keys():
+                            useractivedays[node].append(i)
+                        else:  
+                            useractivedays.update({node:[i]})
+                        for keyz, neighborsz in adjacencydict.items():
+                            if keyz == node:
+                                for neighborz in neighborsz:
+                                    if infectedstates[neighborz] == "S":
+                                        if neighborz in communities[1]:
+                                            if flipstateZ(neighborz) is True:
+                                                infectedstates[neighborz] = "Z"
+                                                if neighborz not in useractivedays.keys():
+                                                    newusers += 1
+                                        elif neighborz in communities[0]:
+                                            if flipstateI(neighborz) is True:
+                                                infectedstates[neighborz] = "I"
+                                                if neighborz not in useractivedays.keys():
+                                                    newusers += 1
+                                                    betweeninfection += 1
+                        if flipstateR(node) is True:
+                            infectedstates[node] = "R"
 
 
-            usersentering_by_iteration.append(activelyinfected)
-        avgnewusers = np.mean(usersentering_by_iteration)
-        betaavgnewusers.append(avgnewusers)
+                usersentering_by_iteration.append(newusers)
+                usersinfected_by_iteration.append(infecteds)
+            enteroverinfect = np.array(usersentering_by_iteration)/np.array(usersinfected_by_iteration)
+            avgnewusers = []
+            for i in enteroverinfect: 
+                if math.isnan(i) is False: 
+                    avgnewusers.append(i)
+            meannewusers = np.mean(np.array(avgnewusers))
+            betaavgnewusers.append(meannewusers)
+            betbetweeninfection.append(np.array(betweeninfection))
 
-        betbetweeninfection.append(betweeninfection)
+            durations = []
+            durationdict = {}
+            for user, activedays in useractivedays.items():
+                duration = 0
+                duration += (activedays[-1] - activedays[0])
+                durations.append(duration)
+
+            avgduration = np.mean(durations)
+            betaavgdurations.append(avgduration)
+
+        Gammabetaavgdurations.append(np.round(betaavgdurations,1))
+        Gammabetaavgnewusers.append(betaavgnewusers)
+        Gammabetabetweeninfection.append(betbetweeninfection)
+
+    print("avg durations")
+    print(Gammabetaavgdurations)
+    print("avg new users per day")
+    print(Gammabetaavgnewusers)
+    print("number of users between infection")
+    print(Gammabetabetweeninfection)
+
+    zavgduration = []
+    MEavgduration = []
+    for row in Gammabetaavgdurations:
+        for i in row:
+            errori = np.round((i - 28.0628477471)**2,2)
+            MEavgduration.append(errori) 
+    sd1 = np.std(MEavgduration)
+    for i in MEavgduration:
+        zavgduration.append(i/sd1)
+
+    zbetweeninfection = []
+    MEbetweeninfection = []
+    for row in Gammabetabetweeninfection:
+        for j in row:
+            scaledj = 100*(j/(len(useractivedays)))
+            errorj = np.round((scaledj - 15)**2,2)
+            MEbetweeninfection.append(errorj)
+    sd2 = np.std(MEbetweeninfection)
+    for i in MEbetweeninfection:
+        zbetweeninfection.append(i/sd2)
+
+    # make sure its NEW users in the simulation in SIR it is but in other is not
+    # Avg percent of users new
+    zavgnewusers = []
+    MEavgnewusers = []
+    for row in Gammabetaavgnewusers:
+        for k in row:
+            scaledk = 100*(k)
+            errork = np.round((scaledk - 54.9244279666)**2, 2)
+            MEavgnewusers.append(errork)
+    sd3 = np.std(MEavgnewusers)
+    for i in MEavgnewusers:
+        zavgnewusers.append(i/sd3)
+
+    Meansqerror = np.array(map(sum, zip(zavgduration, zbetweeninfection, zavgnewusers)))
+    print(Meansqerror)
+    print("Min MSE")
+    print(min(Meansqerror))
+    print((Meansqerror.tolist()).index(min(Meansqerror))+1)
+    mses.append(Meansqerror)
+print(mses)
+print(mses[0])
+print(mses[1])
+zippedmse = zip(mses[0], mses[1], mses[1])
+print(zippedmse)
+stdmse = [np.std(i) for i in zippedmse]
+avgmse = np.round(np.array([np.mean(item) for item in zippedmse]),2)
+print(avgmse)
+print("min avg mse")
+print(min(avgmse))
+print((avgmse.tolist()).index(min(avgmse))+1)
+print("standard deviations")
+print(stdmse)
 
 
-        durations = []
-        durationdict = {}
-        for user, activedays in useractivedays.items():
-            duration = 0
-            duration += (activedays[-1] - activedays[0])
-            durations.append(duration)
+mesemap = [avgmse[i:i+6] for i in range(0, len(avgmse), 6)]
+print(mesemap)
 
-        avgduration = np.mean(durations)
-        betaavgdurations.append(avgduration)
-
-    Gammabetaavgdurations.append(np.round(betaavgdurations,1))
-    Gammabetaavgnewusers.append(betaavgnewusers)
-    Gammabetabetweeninfection.append(betbetweeninfection)
-
-print("avg durations")
-print(Gammabetaavgdurations)
-print("avg new users per day")
-print(Gammabetaavgnewusers)
-print("number of users between infection")
-print(Gammabetabetweeninfection)
-
-MEavgduration = []
-for row in Gammabetaavgdurations:
-    for i in row:
-        errori = np.round((i - 28.0628477471)**2,2)
-        MEavgduration.append(errori) 
-sd1 = np.std(MEavgduration)
-for i in MEavgduration:
-    zavgduration.append(i/sd1)
-
-MEbetweeninfection = []
-for row in Gammabetabetweeninfection:
-    for j in row:
-        scaledj = 100*(j/(len(useractivedays)))
-        errorj = np.round((scaledj - 15)**2,2)
-        MEbetweeninfection.append(errorj)
-sd2 = np.std(MEbetweeninfection)
-for i in MEbetweeninfection:
-    zbetweeninfection.append(i/sd2)
-
-# make sure its NEW users in the simulation in SIR it is but in other is not
-# Avg percent of users new
-MEavgnewusers = []
-for row in Gammabetaavgnewusers:
-    for k in row:
-        scaledk = 100*(k)
-        errork = np.round((scaledk - 54.9244279666)**2, 2)
-        MEavgnewusers.append(errork)
-sd3 = np.std(MEavgnewusers)
-for i in MEavgnewusers:
-    zavgnewusers.append(i/sd3)
-
-Meansqerror = np.array(map(sum, zip(zavgduration, zbetweeninfection, zavgnewusers)))
-print(Meansqerror)
-
-print(min(Meansqerror))
-print(Meansqerror.index(min(Meansqerror))+1)
-
-mesemap = [Meansqerror[i:i+15] for i in range(0, len(Meansqerror), 15)]
-
-Gamma = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30]
-Beta = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30]
+Gamma = [2, 5, 10, 15, 20,25] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [2,4,6,8,10,12] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
 
 fig, ax = plt.subplots()
 im = ax.imshow(mesemap)
