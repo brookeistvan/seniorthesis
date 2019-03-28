@@ -17,7 +17,7 @@ from operator import add
 import math
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.random_partition_graph([700,300],.1,.0125)
+G = nx.random_partition_graph([800,200],.1,.0125)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 communities = list(greedy_modularity_communities(G))
 
@@ -30,13 +30,13 @@ communities = list(greedy_modularity_communities(G))
 # infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
-    num = random.randint(0,99)  # random number 0-9
+    num = random.randint(0,999)  # random number 0-9
     if num < Beta: 
         return True
     return False 
 
 def flipstateZ(node): 
-    num = random.randint(0,99)  # random number 0-9
+    num = random.randint(0,999)  # random number 0-9
     if num < Beta: 
         return True
     return False 
@@ -53,12 +53,12 @@ for iteration in range(3):
     Gammabetaavgdurations = []
     Gammabetaavgnewusers = []
     Gammabetabetweeninfection = []
-    for Gamma in [2, 5, 10, 15, 20,25]: 
+    for Gamma in [2, 3, 4, 5, 6, 8, 10, 12]: 
         # print(Gamma)
         betaavgdurations = []
         betaavgnewusers = []
         betbetweeninfection = []
-        for Beta in [2,4,6,8,10,12]:
+        for Beta in [4,5,6,7,8,9,10]:
             # print(Beta)
 
             # create dict for states and one infected
@@ -212,11 +212,11 @@ print("standard deviations")
 print(stdmse)
 
 
-mesemap = [avgmse[i:i+6] for i in range(0, len(avgmse), 6)]
+mesemap = [avgmse[i:i+7] for i in range(0, len(avgmse), 7)]
 print(mesemap)
 
-Gamma = [2, 5, 10, 15, 20,25] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Beta = [2,4,6,8,10,12] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Gamma = [2, 3,4,5,6,8,10,12] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [4,5,6,7,8,9,10]#[2,3,4,5,6,8,10,12] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
 
 fig, ax = plt.subplots()
 im = ax.imshow(mesemap)

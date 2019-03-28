@@ -17,7 +17,7 @@ from operator import add
 import math
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.random_partition_graph([700,300],.1,.0125)
+G = nx.random_partition_graph([800,200],.1,.0125)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 communities = list(greedy_modularity_communities(G))
 
@@ -58,17 +58,17 @@ for iteration in range(3):
     EGBavgdurations  = []
     EGBavgnewusers = []
     EGBbetweeninfection = []
-    for Epsilon in [10, 20, 30,40,50,60]: 
+    for Epsilon in [2,5,10,15,20,25,30]: 
         print(Epsilon)
         Gammabetaavgdurations = []
         Gammabetaavgnewusers = []
         Gammabetabetweeninfection = []
-        for Gamma in [2, 5, 10, 15, 20,25]:
+        for Gamma in [2,5,10,15,20,25,30]:
             print(Gamma)
             betaavgdurations = []
             betaavgnewusers = []
             betbetweeninfection = []
-            for Beta in [2,4,6,8,10,12,14]: #in range(2,8,2):
+            for Beta in [2,3,4,5,6,8,10]: #in range(2,8,2):
                 print(Beta)
 
                 # create dict for states and one infected
@@ -248,15 +248,14 @@ print(stdmse)
 
 # mesemap = [Meansqerror[i:i+8] for i in range(0, len(Meansqerror), 8)]
 # epsilon, gamma, beta
-mesemap = avgmse.reshape(6,6,7)
+mesemap = avgmse.reshape(7,7,7)
 BGmap = np.round(mesemap.mean(axis=0),2)
 print(BGmap)
 
+Gamma = [2,5,10,15,20,25,30] #, 20, 25, 30] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [2,3,4,5,6,8,10] #[2,4,6,8,10,12] #,10,15] #2.5,3,3.5,4] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Epsilon = [2,5,10,15,20,25,30]
 
-Gamma = [2,5,10,15,20,25] #, 20, 25, 30] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Beta = [2,4,6,8,10,12,14] #,10,15] #2.5,3,3.5,4] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Epsilon = [10,20,30,40,50,60] #,8,10]
-# 1,40,3
 
 fig, ax = plt.subplots()
 im = ax.imshow(BGmap)

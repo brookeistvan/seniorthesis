@@ -13,13 +13,10 @@ import io
 import math
 from itertools import groupby
 from operator import itemgetter
-from networkx.algorithms.community import greedy_modularity_communities
-import numpy as np
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
 G = nx.random_partition_graph([800,200],.1,.0125)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
-communities = list(greedy_modularity_communities(G))
 
 # G = nx.planted_partition_graph(2, 100, 0.5, 0.1,seed=42)
 # adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
@@ -34,30 +31,23 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 10: 
-        return True
-    return False 
-
-
-def flipstateZ(node): 
-    num = random.randint(0,99)  # random number 0-9
-    if num < 10: 
+    if num < 5: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 10:
+    if num2 < 2:
         return True
     return False
 
 
-def flipstateS(states):
-    num3 = random.randint(0,99)
-    if num3 < 80:
-        return True
-    return False
+# def flipstateS(states):
+#     num3 = random.randint(0,99)
+#     if num3 < 2:
+#         return True
+#     return False
 
 reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
 infectedcount_by_iteration = [1]
@@ -67,15 +57,47 @@ infectedcount = 1
 recoveredcount = 0
 susceptiblecount = len(infectedstates) - 1
 useractivedays = {}
-usersentering_by_iteration = []
-usersinfected_by_iteration = []
-betweeninfection = 0 
+# for i in range(426):
+#     for node, state in infectedstates.items():
+#         if state == "I": 
+#             if node in useractivedays.keys():
+#                 useractivedays[node].append(i)
+#             else:  
+#                 useractivedays.update({node:[i]})
+#             for key, neighbors in adjacencydict.items():
+#                 if key == node: 
+#                     for neighbor in neighbors:
+#                         if infectedstates[neighbor] == "S":
+#                             if flipstateI(neighbor) is True: 
+#                                 infectedstates[neighbor] = "I"
+#                                 infectedcount += 1 
+#                                 susceptiblecount -= 1
+#             if flipstateS(node) is True: 
+#                 infectedstates[node] = "S"
+#                 susceptiblecount += 1
+#                 infectedcount -= 1
+#             elif flipstateR(node) is True:
+#                 infectedstates[node] = "R"
+#                 recoveredcount += 1
+#                 infectedcount -= 1
+#     for j in range(len(reinject)):
+#         if i == reinject[j]:
+#             reinfectedcount = 0
+#             nums = random.sample(range(0, 199), 10)
+#             for node1, state1 in infectedstates.items():
+#                 for n in range(10):
+#                     if node1 == nums[n]:
+#                         if state1 == "S":
+#                             infectedstates[node1] = "I"
+#                             reinfectedcount += 1
+#                             infectedcount += 1
+#                             susceptiblecount -= 1
+
+
 for i in range(426):
-    infecteds = 0 
-    didnottweetyesterday = 0
+    activelyinfected = 0 
     for node, state in infectedstates.items():
         if state == "I": 
-            infecteds += 1
             if node in useractivedays.keys():
                 useractivedays[node].append(i)
             else:  
@@ -84,65 +106,23 @@ for i in range(426):
                 if key == node: 
                     for neighbor in neighbors:
                         if infectedstates[neighbor] == "S":
-                            if neighbor in communities[0]:
-                                if flipstateI(neighbor) is True: 
-                                    infectedstates[neighbor] = "I"
-                                    infectedcount += 1 
-                                    susceptiblecount -= 1
-                                    didnottweetyesterday +=1
-                            elif neighbor in communities[1]:
-                                if flipstateZ(neighbor) is True: 
-                                    infectedstates[neighbor] = "Z"
-                                    didnottweetyesterday += 1
-                                    betweeninfection += 1
-                                    infectedcount += 1 
-                                    susceptiblecount -= 1
-            if flipstateS(node) is True: 
-                infectedstates[node] = "S"
-                susceptiblecount += 1
-                infectedcount -= 1
-            elif flipstateR(node) is True:
-                infectedstates[node] = "R"
-                recoveredcount += 1
-                infectedcount -= 1
-        elif state == "Z":
-            infecteds += 1
-            if node in useractivedays.keys():
-                useractivedays[node].append(i)
-            else:  
-                useractivedays.update({node:[i]})
-            for keyz, neighborsz in adjacencydict.items():
-                if keyz == node:
-                    for neighborz in neighborsz:
-                        if infectedstates[neighborz] == "S":
-                            if neighborz in communities[1]:
-                                if flipstateZ(neighborz) is True:
-                                    infectedstates[neighborz] = "Z"
-                                    didnottweetyesterday += 1
-                                    # if neighbor not in useractivedays.keys():
-                                    #     newusers += 1
-                                    # activelyinfected += 1
-                                    infectedcount += 1 
-                                    susceptiblecount -= 1
-                            elif neighborz in communities[0]:
-                                if flipstateI(neighborz) is True:
-                                    infectedstates[neighborz] = "I"
-                                    didnottweetyesterday += 1
-                                    # if neighbor not in useractivedays.keys():
-                                    #     newusers += 1
-                                    # activelyinfected += 1 
-                                    betweeninfection += 1
-                                    infectedcount += 1 
-                                    susceptiblecount -= 1
+                            if flipstateI(neighbor) is True: 
+                                infectedstates[neighbor] = "I"
+                                # activelyinfected += 1
+                                infectedcount += 1 
+                                susceptiblecount -= 1
             if flipstateR(node) is True:
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 infectedcount -= 1
-            elif flipstateS(node) is True:
-                infectedstates[node] = "S"
-                susceptiblecount += 1
-                infectedcount -= 1
 
+        # if state == "R":
+        #     # for keyr, neighborsr in adjacencydict.items():
+        #     #     if keyr == node: 
+        #     if flipstateS(node) is True: 
+        #         infectedstates[node] = "S"
+        #         recoveredcount -= 1
+        #         susceptiblecount += 1
     for j in range(len(reinject)):
         if i == reinject[j]:
             reinfectedcount = 0
@@ -163,20 +143,6 @@ for i in range(426):
     infectedcount_by_iteration.append(infectedcount)
     recoveredcount_by_iteration.append(recoveredcount)
     susceptiblecount_by_iteration.append(susceptiblecount)
-    usersinfected_by_iteration.append(infecteds)
-    usersentering_by_iteration.append(didnottweetyesterday)
-enteroverinfect = np.array(usersentering_by_iteration)/np.array(usersinfected_by_iteration)
-avgnewusers = []
-for i in enteroverinfect: 
-    if math.isnan(i) is False: 
-        avgnewusers.append(i)
-meannewusers = np.mean(np.array(avgnewusers))
-print("avg new users")
-print(meannewusers)
-print("number between infection")
-print(betweeninfection)
-
-errorj = np.round(((100*(betweeninfection/len(useractivedays)))-26.5)**2,2)
 
 # print(infectedcount_by_iteration)
 # print(recoveredcount_by_iteration)
@@ -263,8 +229,8 @@ x = []
 for n in range(len(infectedcount_by_iteration)):
     x.append(n)
 plt.plot(x, infectedcount_by_iteration, label="infected", color='r')
-plt.plot(x, recoveredcount_by_iteration, label="recovered", color='g')
-plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color='b')
+plt.plot(x, recoveredcount_by_iteration, label="recovered", color = 'g')
+plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color ='b')
 plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()
@@ -276,4 +242,3 @@ plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()
 plt.show()
-

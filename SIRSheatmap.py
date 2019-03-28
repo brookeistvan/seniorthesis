@@ -17,7 +17,7 @@ from operator import add
 import math
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-G = nx.random_partition_graph([700,300],.1,.0125)
+G = nx.random_partition_graph([800,200],.1,.0125)
 adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 communities = list(greedy_modularity_communities(G))
 
@@ -132,7 +132,7 @@ for iteration in range(3):
                             if flipstateR(node) is True:
                                 infectedstates[node] = "R"
 
-                        if state == "R":
+                        elif state == "R":
                             if flipstateS(node) is True: 
                                 infectedstates[node] = "S"
 

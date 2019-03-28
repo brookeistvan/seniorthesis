@@ -20,10 +20,12 @@ tweet_files = [tweet_files_dir+'/'+filename for filename in tweet_files]
 
 # # Loop over all tweet files
 users = {}
+users_by_day = []
 dates = []
 datecount = 0 
 rasterusers = {}
 for tweet_file in tweet_files:
+    dayusers = {"removeme"}
     date = str((tweet_file.split(".")[0]).split("/")[1])
     dates.append(date)
     datecount += 1
@@ -43,6 +45,12 @@ for tweet_file in tweet_files:
                         rasterusers[tweet["actor"]["preferredUsername"]].append(datecount)
                     else:
                         rasterusers.update({tweet["actor"]["preferredUsername"]: [datecount]})
+                    if tweet["actor"]["preferredUsername"] not in dayusers:
+                        dayusers.add(tweet["actor"]["preferredUsername"])
+    dayusers.remove("removeme")
+    users_by_day.append(len(dayusers))
+users_by_day.remove(0)
+
 infectedcount_by_day = []
 durations = []
 durationdict = {}
@@ -55,52 +63,6 @@ for user1, activedays in rasterusers.items():
     for k, g in groupby(enumerate(activedays), lambda (i, x): i-x):
         userconsecutives.append(map(itemgetter(1), g))
     consecutives.append(userconsecutives)
-
-# timestillfistinfection = []
-# for i in consecutives:
-#     timestillfistinfection.append(i[0])
-# print(timestillfistinfection)
-# print(np.mean(timestillfistinfection))
-
-# appearonce = 0
-# appearmore = 0
-#lengths = []
-
-# # between sets of activity
-# print(len(consecutives))
-# print(consecutives)
-# allsetperiod =[]
-# for i in consecutives: 
-#     lastactiveday = 0
-#     setperiods = []
-#     for sets in i:
-#         period = sets[0] - lastactiveday 
-#         if period > 0:
-#             setperiods.append(period)
-#         lastactiveday = sets[-1]
-#     # print(setperiods)
-#     del setperiods[0]
-#     if len(setperiods) > 0:
-#         allsetperiod.append(setperiods)
-# print(allsetperiod)
-# print(len(allsetperiod))
-# sumbetweensettime = 0
-# for i in allsetperiod:
-#     for j in i: 
-#         sumbetweensettime += j
-# print(sumbetweensettime)
-# print(sumbetweensettime/len(allsetperiod))
-
-
-    #lengths.append(len(i))
-    # if len(i) == 1: 
-    #     appearonce += 1
-    # else: 
-    #     appearmore += 1
-#print(lengths)
-# print(appearonce)
-# print(appearmore)
-#print(len(rasterusers))
 
 shortrecovereddict = {}
 for i in range(1,426):
@@ -117,12 +79,11 @@ print(len(shortrecovereddict))
 
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
-
-print(len(x))
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-plt.plot(x, shortrecovereddict.values())
+plt.plot(x, shortrecovereddict.values(), label="recoverd users", color='g')
+plt.plot(x, users_by_day, label="infected users", color = 'r')
 plt.xlabel("time")
-plt.ylabel("total number of users recovered")
+plt.ylabel("total number of users")
 plt.gcf().autofmt_xdate()
 plt.show()
