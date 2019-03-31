@@ -37,21 +37,21 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,999)  # random number 0-9
-    if num < 6: 
+    if num < 140: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 4:
+    if num2 < 96:
         return True
     return False
 
 
 def flipstateS(states):
     num3 = random.randint(0,99)
-    if num3 < 1:
+    if num3 < 8:
         return True
     return False
 
@@ -151,16 +151,18 @@ for i in range(426):
 
 
 # # Long duration
-# durations = []
-# durationdict = {}
-# for user, activedays in useractivedays.items():
-#     duration = 0
-#     duration += (activedays[-1] - activedays[0])
-#     durations.append(duration)
-#     if duration in durationdict:
-#         durationdict[duration] += 1
-#     else:
-#         durationdict.update({duration:1})
+durations = []
+durationdict = {}
+for user, activedays in useractivedays.items():
+    duration = 0
+    duration += (activedays[-1] - activedays[0])
+    durations.append(duration)
+    if duration in durationdict:
+        durationdict[duration] += 1
+    else:
+        durationdict.update({duration:1})
+print("average long duration")
+print(np.mean(durations))
 
 # # to find short duration
 shortdurations = []
@@ -179,7 +181,7 @@ print(shortdurationsdict)
 sumd = 0 
 for k,v in shortdurationsdict.items():
     sumd += k*v
-print("average user duration")
+print("average short user duration")
 print(sumd/(len(shortdurations)))  
 
 
@@ -248,6 +250,7 @@ plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()
 plt.show()
+
 # # graph key as x and value as y
 # plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
 # plt.xticks(range(len(durationdict)), list(durationdict.keys()))
@@ -266,6 +269,12 @@ plt.xlabel("number of days infected")
 plt.ylabel("number of nodes infected x days")
 plt.show()
 
+plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
+np.arange(0, max(durationdict.keys())+1, 1.0)
+#plt.xticks(range(len(durationdict)), bins1)
+plt.xlabel("number of days infected")
+plt.ylabel("number of users infected x days")
+plt.show()
 
 
 

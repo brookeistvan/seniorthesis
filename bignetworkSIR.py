@@ -30,14 +30,14 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,999)  # random number 0-9
-    if num < 40: 
+    if num < 10: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,999)
-    if num2 < 50:
+    if num2 < 80:
         return True
     return False
 

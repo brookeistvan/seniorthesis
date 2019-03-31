@@ -18,9 +18,17 @@ tweet_files = sorted(os.listdir(tweet_files_dir))
 # Prepend directory to each tweet filename
 tweet_files = [tweet_files_dir+'/'+filename for filename in tweet_files]
 
+def isrecovered(username):
+    for key, value in users_by_day.items():
+        if key > newdaycount:
+            if username in users_by_day[key]:
+                return False
+    return True
+
 # # Loop over all tweet files
 users = {}
-users_by_day = []
+users_by_day = {}
+usernum_by_day = []
 dates = []
 datecount = 0 
 rasterusers = {}
@@ -48,34 +56,55 @@ for tweet_file in tweet_files:
                     if tweet["actor"]["preferredUsername"] not in dayusers:
                         dayusers.add(tweet["actor"]["preferredUsername"])
     dayusers.remove("removeme")
-    users_by_day.append(len(dayusers))
-users_by_day.remove(0)
+    usernum_by_day.append(len(dayusers))
+    users_by_day.update({datecount:dayusers})
+usernum_by_day.remove(0)
 
-infectedcount_by_day = []
-durations = []
-durationdict = {}
+recoverdcount_by_day= []
+newdaycount = 0
+for tweet_file in tweet_files:
+    newdaycount += 1
+    recoverdcount = 0
 
-# to find short duration
-#time till infection
-consecutives = []
-for user1, activedays in rasterusers.items():
-    userconsecutives = []
-    for k, g in groupby(enumerate(activedays), lambda (i, x): i-x):
-        userconsecutives.append(map(itemgetter(1), g))
-    consecutives.append(userconsecutives)
+    # dates.append(str((tweet_file.split(".")[0]).split("/")[1]))
+    with open(tweet_file, 'r') as f:
+        # Go through each tweet in the tweet file
+        for line in f:
+            try:
+                tweet = json.loads(line.strip("\n"))
+            except:
+                print("Load error")
+                continue
 
-shortrecovereddict = {}
-for i in range(1,426):
-    shortrecovereddict.update({i:0})
+            if "actor" in tweet:
+                if "preferredUsername" in tweet["actor"]:
+                    if isrecovered(tweet["actor"]["preferredUsername"]) is True:
+                        recoverdcount += 1
 
-for userconsec in consecutives:
-    for j in range(1,426):
-        # for day in userconsec:
-        if j > userconsec[0][0]: 
-            if j not in userconsec:
-                shortrecovereddict[j] += 1
-print(shortrecovereddict)
-print(len(shortrecovereddict))
+        recoverdcount_by_day.append(recoverdcount)
+
+recoverdcount_by_day.remove(0)
+#usernum_by_day.remove(0)
+
+count = 0
+totalrecoved_by_day = []
+for r in recoverdcount_by_day: 
+    count += r 
+    totalrecoved_by_day.append(count)
+
+
+# To plot number still infected
+stillinfected = {}
+for i in range(1,427):
+    stillinfected.update({i:0})
+print(stillinfected)
+
+# to calculate and plot number still infected
+for user, activedays in rasterusers.items():
+    for day in range(activedays[0], (activedays[-1]+1)):
+        stillinfected[day] += 1
+print(stillinfected)
+del stillinfected[1]
 
 dates.remove('')
 x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
@@ -85,13 +114,13 @@ fig, ax1 = plt.subplots()
 color = 'red'
 ax1.set_xlabel('time')
 ax1.set_ylabel('number of users infected')
-ax1.plot(x, users_by_day, color=color)
+ax1.plot(x, stillinfected.values(), color=color)
 ax1.tick_params(axis='y', labelcolor=color)
 
 ax2 = ax1.twinx()
 color = 'green'
 ax2.set_ylabel('number of users recoverd')
-ax2.plot(x, shortrecovereddict.values(), color=color)
+ax2.plot(x, totalrecoved_by_day, color=color)
 ax2.tick_params(axis='y', labelcolor=color)
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
@@ -99,11 +128,12 @@ plt.gcf().autofmt_xdate()
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
 
-
-
-# plt.plot(x, shortrecovereddict.values(), label="recoverd users", color='g')
-# plt.plot(x, users_by_day, label="infected users", color = 'r')
+# dates.remove('')
+# x = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
+# print(len(x))
+# plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+# plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+# plt.plot(x, stillinfected.values())
 # plt.xlabel("time")
-# plt.ylabel("total number of users")
-# plt.gcf().autofmt_xdate()
+# plt.ylabel("number of users still infected")
 # plt.show()

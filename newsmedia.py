@@ -114,3 +114,4 @@ plt.gca().xaxis.set_major_locator(mdates.DayLocator())
 plt.gcf().autofmt_xdate()
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
+

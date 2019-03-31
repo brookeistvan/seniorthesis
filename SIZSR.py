@@ -18,9 +18,9 @@ adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
 communities = list(greedy_modularity_communities(G))
 # print(communities)
 
-# export graph so can be visualized
-outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
-nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
+# # export graph so can be visualized
+# outputdir = "/Users/brookeistvan/Documents/Thesis/seniorthesis"
+# nx.write_gexf(G, outputdir+"SIZSRgraph.gexf")
 
 infectedstates = {}
 for n in range(len(adjacencydict)):
@@ -43,27 +43,27 @@ elif startnode in communities[1]:
     infectedcount_by_iteration.append(0)
 
 def flipstateI(node): 
-    num = random.randint(0,99)  # random number 0-9
-    if num < 10: 
+    num = random.randint(0,999)  # random number 0-9
+    if num < 400: 
         return True
     return False 
 
 def flipstateZ(node): 
-    num = random.randint(0,99)  # random number 0-9
-    if num < 20: 
+    num = random.randint(0,999)  # random number 0-9
+    if num < 5: 
         return True
     return False 
 
 def flipstateR(states):
-    num2 = random.randint(0,99)
-    if num2 < 5:
+    num2 = random.randint(0,999)
+    if num2 < 90:
         return True
     return False
 
 
 def flipstateS(states):
-    num3 = random.randint(0,99)
-    if num3 < 80:
+    num3 = random.randint(0,999)
+    if num3 < 3:
         return True
     return False
 
@@ -94,11 +94,11 @@ for i in range(426): #426
                                     skepticcount += 1
                                     susceptiblecount -= 1
 
-            if flipstateS(node) is True: 
-                infectedstates[node] = "S"
-                susceptiblecount += 1
-                infectedcount -= 1
-            elif flipstateR(node) is True:
+            # if flipstateS(node) is True: 
+            #     infectedstates[node] = "S"
+            #     susceptiblecount += 1
+            #     infectedcount -= 1
+            if flipstateR(node) is True:
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 infectedcount -= 1
@@ -119,11 +119,11 @@ for i in range(426): #426
                                     activelyinfected += 1
                                     infectedcount += 1 
                                     susceptiblecount -= 1
-            if flipstateS(node) is True: 
-                infectedstates[node] = "S"
-                susceptiblecount += 1
-                skepticcount -= 1
-            elif flipstateR(node) is True:
+            # if flipstateS(node) is True: 
+            #     infectedstates[node] = "S"
+            #     susceptiblecount += 1
+            #     skepticcount -= 1
+            if flipstateR(node) is True:
                 infectedstates[node] = "R"
                 recoveredcount += 1
                 skepticcount -= 1
@@ -164,12 +164,12 @@ for i in range(426): #426
 x = []
 for n in range(len(infectedcount_by_iteration)):
     x.append(n)
-plt.plot(x, activelyinfected_by_iteration, label="activelyinfected")
-plt.plot(x, infectedcount_by_iteration, label="infected", color="r")
-plt.plot(x, skepticcount_by_iteration, label="skeptics", color="k")
-# plt.plot(x, recoveredcount_by_iteration, label="recovered", color="b")
-# plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color="g")
-# plt.xlabel("iteration")
-# plt.ylabel("number of infected nodes")
-# plt.legend()
+#plt.plot(x, activelyinfected_by_iteration, label="activelyinfected")
+plt.plot(x, infectedcount_by_iteration, label="infected group1", color="r")
+plt.plot(x, skepticcount_by_iteration, label="infected group2", color="k")
+plt.plot(x, recoveredcount_by_iteration, label="recovered", color="b")
+plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color="g")
+plt.xlabel("iteration")
+plt.ylabel("number of infected nodes")
+plt.legend()
 plt.show()

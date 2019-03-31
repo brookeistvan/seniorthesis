@@ -24,27 +24,27 @@ from networkx.algorithms.community import greedy_modularity_communities
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 4: 
+    if num < 14: 
         return True
     return False 
 
 def flipstateZ(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 4: 
+    if num < 14: 
         return True
     return False 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 4:
+    if num2 < 9:
         return True
     return False
 
 betweenentertotal = []
-for p in np.arange(.005, .1, .005):
+for p in np.arange(.005, .3, .005):
     betweenenter = 0 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
-    G = nx.random_partition_graph([700,300],.1, p)
+    G = nx.random_partition_graph([800,200],.1, p)
     adjacencydict = nx.to_dict_of_dicts(G, nodelist=None, edge_data = None)
     communities = list(greedy_modularity_communities(G))
 
@@ -72,13 +72,13 @@ for p in np.arange(.005, .1, .005):
                                         infectedstates[neighbor] = "I"
                                         activelyinfected += 1
                                         # infectedcount += 1 
-                                        susceptiblecount -= 1
+                                        # susceptiblecount -= 1
                                 elif neighbor in communities[1]:
                                     if flipstateZ(neighbor) is True:
                                         infectedstates[neighbor] = "Z"
                                         activelyinfected += 1 
                                         # skepticcount += 1
-                                        susceptiblecount -= 1
+                                        # susceptiblecount -= 1
                                         betweenenter += 1
 
                 # if flipstateS(node) is True: 
@@ -99,13 +99,13 @@ for p in np.arange(.005, .1, .005):
                                         infectedstates[neighborz] = "Z"
                                         activelyinfected += 1
                                         # skepticcount += 1
-                                        susceptiblecount -= 1
+                                        # susceptiblecount -= 1
                                 elif neighborz in communities[0]:
                                     if flipstateI(neighborz) is True:
                                         infectedstates[neighborz] = "I"
                                         activelyinfected += 1
                                         # infectedcount += 1 
-                                        susceptiblecount -= 1
+                                        # susceptiblecount -= 1
                                         betweenenter += 1
                 # if flipstateS(node) is True: 
                 #     infectedstates[node] = "S"
@@ -116,18 +116,22 @@ for p in np.arange(.005, .1, .005):
                     recoveredcount += 1
                     # skepticcount -= 1
 
-        activelyinfected_by_iteration.append(activelyinfected)
+        # activelyinfected_by_iteration.append(activelyinfected)
         # infectedcount_by_iteration.append(infectedcount)
         # skepticcount_by_iteration.append(skepticcount)
-        recoveredcount_by_iteration.append(recoveredcount)
-        susceptiblecount_by_iteration.append(susceptiblecount)
+        # recoveredcount_by_iteration.append(recoveredcount)
+        # susceptiblecount_by_iteration.append(susceptiblecount)
 
     betweenentertotal.append(betweenenter)
 
 print(betweenentertotal)
 print(len(betweenentertotal))
 
-x = [.005, .01, .015, .02, .025, .03, .035, .04, .045, .05, .055, .06, .065, .07, .075, .08, .085, .09, .095]
+x = []
+for p in np.arange(.005, .3, .005):
+    x.append(p)
+
+# x = [.005, .01, .015, .02, .025, .03, .035, .04, .045, .05, .055, .06, .065, .07, .075, .08, .085, .09, .095, .1, .105, .11, .115, .12, .125, .13, .135, .14, .145, .15, .155, .16, .165, .17, .175, .18, .185, .19, .195]
 print(len(x))
 plt.plot(x, betweenentertotal)
 plt.xlabel('probability of connecting between groups')

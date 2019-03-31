@@ -31,14 +31,14 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 5: 
+    if num < 14: 
         return True
     return False 
 
 
 def flipstateR(states):
     num2 = random.randint(0,99)
-    if num2 < 2:
+    if num2 < 9:
         return True
     return False
 
@@ -49,7 +49,7 @@ def flipstateR(states):
 #         return True
 #     return False
 
-reinject = [25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
+reinject = [5, 10, 15, 20, 25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425]
 infectedcount_by_iteration = [1]
 recoveredcount_by_iteration = [0]
 susceptiblecount_by_iteration = [len(infectedstates)]

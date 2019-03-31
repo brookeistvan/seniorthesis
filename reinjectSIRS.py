@@ -31,7 +31,7 @@ infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
     num = random.randint(0,99)  # random number 0-9
-    if num < 4: 
+    if num < 14: 
         return True
     return False 
 

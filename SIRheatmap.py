@@ -30,13 +30,13 @@ communities = list(greedy_modularity_communities(G))
 # infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
-    num = random.randint(0,999)  # random number 0-9
+    num = random.randint(0,99)  # random number 0-9
     if num < Beta: 
         return True
     return False 
 
 def flipstateZ(node): 
-    num = random.randint(0,999)  # random number 0-9
+    num = random.randint(0,99)  # random number 0-9
     if num < Beta: 
         return True
     return False 
@@ -58,7 +58,7 @@ for iteration in range(3):
         betaavgdurations = []
         betaavgnewusers = []
         betbetweeninfection = []
-        for Beta in [4,5,6,7,8,9,10]:
+        for Beta in [1,2,3,4,5]:
             # print(Beta)
 
             # create dict for states and one infected
@@ -131,7 +131,8 @@ for iteration in range(3):
             avgnewusers = []
             for i in enteroverinfect: 
                 if math.isnan(i) is False: 
-                    avgnewusers.append(i)
+                    if math.isinf(i) is False:
+                        avgnewusers.append(i)
             meannewusers = np.mean(np.array(avgnewusers))
             betaavgnewusers.append(meannewusers)
             betbetweeninfection.append(np.array(betweeninfection))
@@ -212,11 +213,11 @@ print("standard deviations")
 print(stdmse)
 
 
-mesemap = [avgmse[i:i+7] for i in range(0, len(avgmse), 7)]
+mesemap = [avgmse[i:i+5] for i in range(0, len(avgmse), 5)]
 print(mesemap)
 
 Gamma = [2, 3,4,5,6,8,10,12] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
-Beta = [4,5,6,7,8,9,10]#[2,3,4,5,6,8,10,12] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
+Beta = [1,2,3,4,5]#[2,3,4,5,6,8,10,12] #[2,4,6] #,8,10,12,14,16,18,20,22,24,26,28,30]
 
 fig, ax = plt.subplots()
 im = ax.imshow(mesemap)

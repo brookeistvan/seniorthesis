@@ -14,6 +14,7 @@ import io
 import math
 from itertools import groupby
 from operator import itemgetter
+import numpy as np
 
 # (# groups, # vertices in each group, probability of connecting within group, probability of connecting between groups, seed for random number generator)
 G = nx.random_partition_graph([800,200],.1,.0125)
@@ -31,22 +32,22 @@ startnode = random.randint(0,len(adjacencydict))
 infectedstates.update({startnode:"I"})
 
 def flipstateI(node): 
-    num = random.randint(0,99)  # random number 0-9
-    if num < 4:
+    num = random.randint(0,999)  # random number 0-9
+    if num < 5:
         return True
     return False 
 
 
 def flipstateR(states):
-    num2 = random.randint(0,99)
-    if num2 < 25:
+    num2 = random.randint(0,999)
+    if num2 < 100:
         return True
     return False
 
 
 def flipstateS(states):
-    num3 = random.randint(0,99)
-    if num3 < 60:
+    num3 = random.randint(0,999)
+    if num3 < 30:
         return True
     return False
 
@@ -88,17 +89,19 @@ for i in range(426):
     susceptiblecount_by_iteration.append(susceptiblecount)
 
 
-# # Long duration
-# durations = []
-# durationdict = {}
-# for user, activedays in useractivedays.items():
-#     duration = 0
-#     duration += (activedays[-1] - activedays[0])
-#     durations.append(duration)
-#     if duration in durationdict:
-#         durationdict[duration] += 1
-#     else:
-#         durationdict.update({duration:1})
+# Long duration
+durations = []
+durationdict = {}
+for user, activedays in useractivedays.items():
+    duration = 0
+    duration += (activedays[-1] - activedays[0])
+    durations.append(duration)
+    if duration in durationdict:
+        durationdict[duration] += 1
+    else:
+        durationdict.update({duration:1})
+print("average long duration")
+print(np.mean(durations))
 
 # print(durationdict)
 # sumd = 0 
@@ -122,7 +125,7 @@ print(shortdurationsdict)
 sumd = 0 
 for k,v in shortdurationsdict.items():
     sumd += k*v
-print("average user duration")
+print("average short user duration")
 print(sumd/(len(shortdurations)))  
 
 
@@ -160,10 +163,10 @@ for n in range(len(infectedcount_by_iteration)):
     x.append(n)
 print(len(x))
 # plt.plot(x, activelyinfected_by_iteration, label="actively infected")
-plt.plot(x, infectedcount_by_iteration, label="infected", color = 'r')
+#plt.plot(x, infectedcount_by_iteration, label="infected", color = 'r')
 plt.plot(x, recoveredcount_by_iteration, label="recovered", color='g')
 plt.plot(x, susceptiblecount_by_iteration, label="susceptible", color='b')
-# plt.plot(x, stillinfected.values(), label="infected", color='r')
+plt.plot(x, stillinfected.values(), label="infected", color='r')
 plt.xlabel("iteration")
 plt.ylabel("number of infected nodes")
 plt.legend()
@@ -196,12 +199,47 @@ plt.show()
 
 
 
+bins2 = []
+alldurations = list(shortdurationsdict.keys())
+for i in range(1, 20,1):
+    bins2.append(i)
+
+# print(bins)
+# print(max(alldurations))
+
+plt.hist(shortdurations, bins2)
+plt.xticks(range(1, 20,1), bins2)
+plt.xlabel("number of days infected")
+plt.ylabel("number of nodes infected x days")
+plt.show()
+
+bins1 = []
+alldurations = list(durationdict.keys())
+for i in range(1, 30, 1):
+    bins1.append(i)
+# print(bins)
+# print(max(alldurations))
+
+plt.hist(durations, bins1)
+plt.xticks(range(1,30,1),bins1)
+plt.xlabel("number of days infected")
+plt.ylabel("number of nodes infected x days")
+plt.show()
+
+plt.bar(range(len(durationdict)), list(durationdict.values()), align='center')
+np.arange(0, max(durationdict.keys())+1, 1.0)
+#plt.xticks(range(len(durationdict)), bins1)
+plt.xlabel("number of days infected")
+plt.ylabel("number of users infected x days")
+plt.show()
+
+
 bins = []
 alldurations = list(shortdurationsdict.keys())
 for i in range(1, 20,1):
     bins.append(i)
 
-print(bins)
+
 # print(bins)
 # print(max(alldurations))
 
@@ -210,5 +248,6 @@ plt.xticks(range(1, 20,1), bins)
 plt.xlabel("number of days infected")
 plt.ylabel("number of nodes infected x days")
 plt.show()
+
 
 
